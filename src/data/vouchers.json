@@ -1,0 +1,27 @@
+[
+  {
+    "id": "v1",
+    "code": "GIAM15K",
+    "title": "Giảm 15.000đ",
+    "type": "amount",
+    "value": 15000,
+    "minOrder": 50000
+  },
+  {
+    "id": "v2",
+    "code": "FREESHIP",
+    "title": "Miễn phí giao hàng",
+    "type": "freeship",
+    "value": 0,
+    "minOrder": 40000
+  },
+  {
+    "id": "v3",
+    "code": "SALE10",
+    "title": "Giảm 10% (tối đa 30k)",
+    "type": "percent",
+    "value": 10,
+    "maxDiscount": 30000,
+    "minOrder": 100000
+  }
+]

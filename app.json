@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "GrabFood Client",
+    "slug": "grabfood-client",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": { "supportsTablet": false },
+    "android": { "package": "com.team.grabfoodclient" },
+    "web": { "bundler": "metro" }
+  }
+}

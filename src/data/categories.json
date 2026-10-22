@@ -1,0 +1,22 @@
+[
+  {
+    "id": "milktea",
+    "name": "Trà sữa",
+    "icon": "cafe"
+  },
+  {
+    "id": "rice",
+    "name": "Cơm",
+    "icon": "restaurant"
+  },
+  {
+    "id": "noodle",
+    "name": "Bún/Phở",
+    "icon": "fast-food"
+  },
+  {
+    "id": "fastfood",
+    "name": "Đồ ăn nhanh",
+    "icon": "pizza"
+  }
+]

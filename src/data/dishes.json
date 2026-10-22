@@ -1,0 +1,836 @@
+[
+  {
+    "id": "r1-d1",
+    "restaurantId": "r1",
+    "name": "Trà sữa trân châu",
+    "description": "Trà sữa truyền thống",
+    "price": 45000,
+    "group": "Best seller",
+    "image": "https://picsum.photos/seed/r1-d1/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r1-d2",
+    "restaurantId": "r1",
+    "name": "Trà đào cam sả",
+    "description": "Thanh mát, giải nhiệt",
+    "price": 49000,
+    "group": "Best seller",
+    "image": "https://picsum.photos/seed/r1-d2/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r1-d3",
+    "restaurantId": "r1",
+    "name": "Hồng trà macchiato",
+    "description": "Lớp kem béo mịn",
+    "price": 52000,
+    "group": "Trà",
+    "image": "https://picsum.photos/seed/r1-d3/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r1-d4",
+    "restaurantId": "r1",
+    "name": "Matcha latte",
+    "description": "Matcha Nhật Bản",
+    "price": 55000,
+    "group": "Trà",
+    "image": "https://picsum.photos/seed/r1-d4/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r2-d1",
+    "restaurantId": "r2",
+    "name": "Trà sữa trân châu",
+    "description": "Trà sữa truyền thống",
+    "price": 45000,
+    "group": "Best seller",
+    "image": "https://picsum.photos/seed/r2-d1/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r2-d2",
+    "restaurantId": "r2",
+    "name": "Trà đào cam sả",
+    "description": "Thanh mát, giải nhiệt",
+    "price": 49000,
+    "group": "Best seller",
+    "image": "https://picsum.photos/seed/r2-d2/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r2-d3",
+    "restaurantId": "r2",
+    "name": "Hồng trà macchiato",
+    "description": "Lớp kem béo mịn",
+    "price": 52000,
+    "group": "Trà",
+    "image": "https://picsum.photos/seed/r2-d3/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r2-d4",
+    "restaurantId": "r2",
+    "name": "Matcha latte",
+    "description": "Matcha Nhật Bản",
+    "price": 55000,
+    "group": "Trà",
+    "image": "https://picsum.photos/seed/r2-d4/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r3-d1",
+    "restaurantId": "r3",
+    "name": "Trà sữa trân châu",
+    "description": "Trà sữa truyền thống",
+    "price": 45000,
+    "group": "Best seller",
+    "image": "https://picsum.photos/seed/r3-d1/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r3-d2",
+    "restaurantId": "r3",
+    "name": "Trà đào cam sả",
+    "description": "Thanh mát, giải nhiệt",
+    "price": 49000,
+    "group": "Best seller",
+    "image": "https://picsum.photos/seed/r3-d2/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r3-d3",
+    "restaurantId": "r3",
+    "name": "Hồng trà macchiato",
+    "description": "Lớp kem béo mịn",
+    "price": 52000,
+    "group": "Trà",
+    "image": "https://picsum.photos/seed/r3-d3/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r3-d4",
+    "restaurantId": "r3",
+    "name": "Matcha latte",
+    "description": "Matcha Nhật Bản",
+    "price": 55000,
+    "group": "Trà",
+    "image": "https://picsum.photos/seed/r3-d4/400/400",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding",
+            "price": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r4-d1",
+    "restaurantId": "r4",
+    "name": "Cơm sườn bì chả",
+    "description": "Sườn nướng than",
+    "price": 55000,
+    "group": "Món chính",
+    "image": "https://picsum.photos/seed/r4-d1/400/400",
+    "options": []
+  },
+  {
+    "id": "r4-d2",
+    "restaurantId": "r4",
+    "name": "Cơm gà xối mỡ",
+    "description": "Da giòn thịt mềm",
+    "price": 50000,
+    "group": "Món chính",
+    "image": "https://picsum.photos/seed/r4-d2/400/400",
+    "options": []
+  },
+  {
+    "id": "r4-d3",
+    "restaurantId": "r4",
+    "name": "Canh chua",
+    "description": "Canh chua cá",
+    "price": 25000,
+    "group": "Món phụ",
+    "image": "https://picsum.photos/seed/r4-d3/400/400",
+    "options": []
+  },
+  {
+    "id": "r5-d1",
+    "restaurantId": "r5",
+    "name": "Cơm sườn bì chả",
+    "description": "Sườn nướng than",
+    "price": 55000,
+    "group": "Món chính",
+    "image": "https://picsum.photos/seed/r5-d1/400/400",
+    "options": []
+  },
+  {
+    "id": "r5-d2",
+    "restaurantId": "r5",
+    "name": "Cơm gà xối mỡ",
+    "description": "Da giòn thịt mềm",
+    "price": 50000,
+    "group": "Món chính",
+    "image": "https://picsum.photos/seed/r5-d2/400/400",
+    "options": []
+  },
+  {
+    "id": "r5-d3",
+    "restaurantId": "r5",
+    "name": "Canh chua",
+    "description": "Canh chua cá",
+    "price": 25000,
+    "group": "Món phụ",
+    "image": "https://picsum.photos/seed/r5-d3/400/400",
+    "options": []
+  },
+  {
+    "id": "r6-d1",
+    "restaurantId": "r6",
+    "name": "Phở bò tái",
+    "description": "Nước dùng 12 tiếng",
+    "price": 60000,
+    "group": "Món chính",
+    "image": "https://picsum.photos/seed/r6-d1/400/400",
+    "options": []
+  },
+  {
+    "id": "r6-d2",
+    "restaurantId": "r6",
+    "name": "Bún chả",
+    "description": "Chả nướng than hoa",
+    "price": 55000,
+    "group": "Món chính",
+    "image": "https://picsum.photos/seed/r6-d2/400/400",
+    "options": []
+  },
+  {
+    "id": "r6-d3",
+    "restaurantId": "r6",
+    "name": "Nem rán",
+    "description": "4 cái / phần",
+    "price": 30000,
+    "group": "Món phụ",
+    "image": "https://picsum.photos/seed/r6-d3/400/400",
+    "options": []
+  },
+  {
+    "id": "r7-d1",
+    "restaurantId": "r7",
+    "name": "Phở bò tái",
+    "description": "Nước dùng 12 tiếng",
+    "price": 60000,
+    "group": "Món chính",
+    "image": "https://picsum.photos/seed/r7-d1/400/400",
+    "options": []
+  },
+  {
+    "id": "r7-d2",
+    "restaurantId": "r7",
+    "name": "Bún chả",
+    "description": "Chả nướng than hoa",
+    "price": 55000,
+    "group": "Món chính",
+    "image": "https://picsum.photos/seed/r7-d2/400/400",
+    "options": []
+  },
+  {
+    "id": "r7-d3",
+    "restaurantId": "r7",
+    "name": "Nem rán",
+    "description": "4 cái / phần",
+    "price": 30000,
+    "group": "Món phụ",
+    "image": "https://picsum.photos/seed/r7-d3/400/400",
+    "options": []
+  },
+  {
+    "id": "r8-d1",
+    "restaurantId": "r8",
+    "name": "Gà rán 2 miếng",
+    "description": "Gà giòn cay",
+    "price": 69000,
+    "group": "Combo",
+    "image": "https://picsum.photos/seed/r8-d1/400/400",
+    "options": []
+  },
+  {
+    "id": "r8-d2",
+    "restaurantId": "r8",
+    "name": "Burger bò phô mai",
+    "description": "Bò Úc",
+    "price": 59000,
+    "group": "Combo",
+    "image": "https://picsum.photos/seed/r8-d2/400/400",
+    "options": []
+  },
+  {
+    "id": "r8-d3",
+    "restaurantId": "r8",
+    "name": "Khoai tây chiên",
+    "description": "Size vừa",
+    "price": 25000,
+    "group": "Món phụ",
+    "image": "https://picsum.photos/seed/r8-d3/400/400",
+    "options": []
+  },
+  {
+    "id": "r9-d1",
+    "restaurantId": "r9",
+    "name": "Gà rán 2 miếng",
+    "description": "Gà giòn cay",
+    "price": 69000,
+    "group": "Combo",
+    "image": "https://picsum.photos/seed/r9-d1/400/400",
+    "options": []
+  },
+  {
+    "id": "r9-d2",
+    "restaurantId": "r9",
+    "name": "Burger bò phô mai",
+    "description": "Bò Úc",
+    "price": 59000,
+    "group": "Combo",
+    "image": "https://picsum.photos/seed/r9-d2/400/400",
+    "options": []
+  },
+  {
+    "id": "r9-d3",
+    "restaurantId": "r9",
+    "name": "Khoai tây chiên",
+    "description": "Size vừa",
+    "price": 25000,
+    "group": "Món phụ",
+    "image": "https://picsum.photos/seed/r9-d3/400/400",
+    "options": []
+  },
+  {
+    "id": "r10-d1",
+    "restaurantId": "r10",
+    "name": "Gà rán 2 miếng",
+    "description": "Gà giòn cay",
+    "price": 69000,
+    "group": "Combo",
+    "image": "https://picsum.photos/seed/r10-d1/400/400",
+    "options": []
+  },
+  {
+    "id": "r10-d2",
+    "restaurantId": "r10",
+    "name": "Burger bò phô mai",
+    "description": "Bò Úc",
+    "price": 59000,
+    "group": "Combo",
+    "image": "https://picsum.photos/seed/r10-d2/400/400",
+    "options": []
+  },
+  {
+    "id": "r10-d3",
+    "restaurantId": "r10",
+    "name": "Khoai tây chiên",
+    "description": "Size vừa",
+    "price": 25000,
+    "group": "Món phụ",
+    "image": "https://picsum.photos/seed/r10-d3/400/400",
+    "options": []
+  }
+]
