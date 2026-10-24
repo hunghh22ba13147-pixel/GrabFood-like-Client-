@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, FlatList, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { api } from '../../services/api';
@@ -11,10 +11,11 @@ import SkeletonList from '../../components/SkeletonList';
 import { useNav } from '../../components/Placeholder';
 import { colors, radius, spacing } from '../../theme';
 
+const U = (id: string) => `https://images.unsplash.com/photo-${id}?w=800&h=400&fit=crop&q=80`;
 const BANNERS = [
-  { id: 'b1', title: 'Giảm 15.000đ', sub: 'Mã GIAM15K cho đơn từ 50k', color: colors.primary },
-  { id: 'b2', title: 'Miễn phí giao hàng', sub: 'Mã FREESHIP cho đơn từ 40k', color: '#FF8A00' },
-  { id: 'b3', title: 'Trà sữa -10%', sub: 'Mã SALE10 cho đơn từ 100k', color: '#7C4DFF' },
+  { id: 'b1', title: 'Giảm 15.000đ', sub: 'Mã GIAM15K cho đơn từ 50k', color: colors.primary, image: U('1558857563-b371033873b8') },
+  { id: 'b2', title: 'Miễn phí giao hàng', sub: 'Mã FREESHIP cho đơn từ 40k', color: '#FF8A00', image: U('1568901346375-23c9450c58cd') },
+  { id: 'b3', title: 'Trà sữa -10%', sub: 'Mã SALE10 cho đơn từ 100k', color: '#7C4DFF', image: U('1582878826629-29b7ad1cdc43') },
 ];
 
 export default function HomeScreen() {
@@ -38,10 +39,12 @@ export default function HomeScreen() {
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} snapToInterval={width * 0.8 + spacing.md} decelerationRate="fast" contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
         {BANNERS.map((b) => (
-          <View key={b.id} style={[s.banner, { width: width * 0.8, backgroundColor: b.color }]}>
+          <ImageBackground key={b.id} source={{ uri: b.image }} style={[s.banner, { width: width * 0.8 }]} imageStyle={{ borderRadius: radius.lg }}>
+            <View style={[s.bannerOverlay, { backgroundColor: b.color + 'CC' }]}>
             <Text style={s.bannerTitle}>{b.title}</Text>
             <Text style={s.bannerSub}>{b.sub}</Text>
           </View>
+          </ImageBackground>
         ))}
       </ScrollView>
 
@@ -90,7 +93,8 @@ const s = StyleSheet.create({
   address: { marginLeft: spacing.sm, fontWeight: '600', color: colors.text, flex: 1 },
   search: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, margin: spacing.lg, marginTop: 0, padding: spacing.md, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.border },
   searchText: { marginLeft: spacing.sm, color: colors.muted },
-  banner: { height: 120, borderRadius: radius.lg, padding: spacing.lg, marginRight: spacing.md, justifyContent: 'center' },
+  banner: { height: 130, marginRight: spacing.md },
+  bannerOverlay: { flex: 1, borderRadius: radius.lg, padding: spacing.lg, justifyContent: 'center' },
   bannerTitle: { color: '#fff', fontSize: 22, fontWeight: '800' },
   bannerSub: { color: '#fff', marginTop: 4 },
   cats: { flexDirection: 'row', justifyContent: 'space-around', padding: spacing.lg },

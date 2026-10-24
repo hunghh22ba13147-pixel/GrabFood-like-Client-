@@ -1,7 +1,23 @@
 // Sinh dữ liệu mẫu: node scripts/gen-data.js  (TV5 có thể sửa trực tiếp file JSON sau khi sinh)
 const fs = require('fs');
 const path = require('path');
-const img = (s, w = 600, h = 400) => `https://picsum.photos/seed/${s}/${w}/${h}`;
+// Ảnh Unsplash đã chọn tay cho đúng món (đã kiểm tra tải được).
+const U = (id, w = 600, h = 400) => `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&q=80`;
+const RESTAURANT_IMG = {
+  r1: '1558857563-b371033873b8', r2: '1497534446932-c925b458314e', r3: '1556679343-c7306c1976bc',
+  r4: '1603133872878-684f208fb84b', r5: '1546069901-ba9599a7e63c', r6: '1582878826629-29b7ad1cdc43',
+  r7: '1555126634-323283e090fa', r8: '1626645738196-c2a7c87a8f58', r9: '1568901346375-23c9450c58cd',
+  r10: '1513104890138-7c749659a591',
+};
+const DISH_IMG = {
+  'Trà sữa trân châu': '1558857563-b371033873b8', 'Trà đào cam sả': '1497534446932-c925b458314e',
+  'Hồng trà macchiato': '1556679343-c7306c1976bc', 'Matcha latte': '1515823064-d6e0c04616a7',
+  'Cơm sườn bì chả': '1603133872878-684f208fb84b', 'Cơm gà xối mỡ': '1569058242253-92a9c755a0ec',
+  'Canh chua': '1455619452474-d2be8b1e70cd', 'Phở bò tái': '1582878826629-29b7ad1cdc43',
+  'Bún chả': '1555126634-323283e090fa', 'Nem rán': '1569058242253-92a9c755a0ec',
+  'Gà rán 2 miếng': '1626645738196-c2a7c87a8f58', 'Burger bò phô mai': '1568901346375-23c9450c58cd',
+  'Khoai tây chiên': '1573080496219-bb080dd4f877',
+};
 
 const categories = [
   { id: 'milktea', name: 'Trà sữa', icon: 'cafe' },
@@ -27,7 +43,7 @@ const restaurants = R.map(([id, name, categoryId, rating, distanceKm, etaMin]) =
   id, name, categoryId, rating, reviewCount: 100 + Math.round(rating * 97),
   distanceKm, etaMin, deliveryFee: 5000 + Math.round(distanceKm) * 3000,
   address: `${Math.round(distanceKm * 37)} Nguyễn Huệ, Quận 1, TP.HCM`,
-  image: img(id), promo: rating >= 4.7 ? 'Giảm 15%' : null,
+  image: U(RESTAURANT_IMG[id]), promo: rating >= 4.7 ? 'Giảm 15%' : null,
 }));
 
 // [name, price, group, desc]
@@ -72,7 +88,7 @@ restaurants.forEach((r) => {
   MENU[r.categoryId].forEach(([name, price, group, description], i) => {
     dishes.push({
       id: `${r.id}-d${i + 1}`, restaurantId: r.id, name, description, price, group,
-      image: img(`${r.id}-d${i + 1}`, 400, 400),
+      image: U(DISH_IMG[name], 400, 400),
       options: r.categoryId === 'milktea' && group !== 'Món phụ' ? [sizeOpt, topping] : [],
     });
   });
