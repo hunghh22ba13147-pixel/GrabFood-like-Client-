@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -19,6 +20,8 @@ import { useAuthStore } from '../../store/authStore';
 import RestaurantCard from '../../components/RestaurantCard';
 import CartFab from '../../components/CartFab';
 import SkeletonList from '../../components/SkeletonList';
+import AddressPicker, { PickedAddress } from '../../components/AddressPicker';
+import { showToast } from '../../components/Toast';
 import { useNav } from '../../components/Placeholder';
 import { colors, radius, shadow, spacing, formatVND } from '../../theme';
 
@@ -32,16 +35,29 @@ const BANNERS = [
 export default function HomeScreen() {
   const nav = useNav();
   const { width } = useWindowDimensions();
-  const address = useAuthStore((s) => s.user?.address) ?? 'Chọn địa chỉ giao hàng';
+  const address = useAuthStore((s) => s.user?.address) ?? '1 Lê Lợi, Quận 1, TP.HCM';
+  const updateProfile = useAuthStore((s) => s.updateProfile);
+
   const [cats, setCats] = useState<Category[]>([]);
   const [list, setList] = useState<Restaurant[] | null>(null);
   const [featuredDishes, setFeaturedDishes] = useState<Dish[]>([]);
+  const [showAddressPicker, setShowAddressPicker] = useState(false);
 
   useEffect(() => {
     api.getCategories().then(setCats);
     api.getRestaurants().then(setList);
     api.getFeaturedDishes().then(setFeaturedDishes);
   }, []);
+
+  const handleSelectAddress = async (place: PickedAddress) => {
+    setShowAddressPicker(false);
+    try {
+      await updateProfile({ address: place.address });
+      showToast('Đã đổi địa chỉ giao hàng!');
+    } catch {
+      // ignore
+    }
+  };
 
   const header = (
     <View>
@@ -96,7 +112,7 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* MỤC MỚI: Món bán chạy hôm nay (Cuộn ngang) */}
+      {/* Mục: Món bán chạy nhất (Cuộn ngang) */}
       {featuredDishes.length > 0 && (
         <View style={s.featuredSection}>
           <View style={s.sectionHeaderRow}>
@@ -151,18 +167,28 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={s.root} edges={['top']}>
-      {/* Top Header thanh địa chỉ */}
-      <View style={s.top}>
+      {/* Top Header thanh địa chỉ - BẤM VÀO ĐỂ ĐỔI ĐỊA CHỈ & MỞ BẢN ĐỒ / TÌM ĐỊA CHỈ */}
+      <TouchableOpacity
+        style={s.top}
+        onPress={() => setShowAddressPicker(true)}
+        activeOpacity={0.7}
+      >
         <View style={s.locPin}>
           <Ionicons name="location" size={18} color="#fff" />
         </View>
         <View style={{ flex: 1, marginLeft: spacing.sm }}>
-          <Text style={s.locTitle}>Giao đến:</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={s.locTitle}>Giao đến:</Text>
+            <Ionicons name="chevron-down" size={14} color={colors.muted} style={{ marginLeft: 3 }} />
+          </View>
           <Text style={s.address} numberOfLines={1}>
             {address}
           </Text>
         </View>
-      </View>
+        <View style={s.changeBtn}>
+          <Text style={s.changeBtnText}>Thay đổi</Text>
+        </View>
+      </TouchableOpacity>
 
       {!list ? (
         <SkeletonList />
@@ -184,6 +210,13 @@ export default function HomeScreen() {
         />
       )}
       <CartFab />
+
+      {/* Modal tìm kiếm địa chỉ / bản đồ */}
+      <AddressPicker
+        visible={showAddressPicker}
+        onClose={() => setShowAddressPicker(false)}
+        onSelect={handleSelectAddress}
+      />
     </SafeAreaView>
   );
 }
@@ -194,7 +227,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm + 2,
+    paddingVertical: spacing.sm + 4,
     backgroundColor: colors.card,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
@@ -208,7 +241,15 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   locTitle: { fontSize: 11, color: colors.muted, fontWeight: '600' },
-  address: { fontWeight: '700', color: colors.text, fontSize: 13 },
+  address: { fontWeight: '700', color: colors.text, fontSize: 13, marginTop: 1 },
+  changeBtn: {
+    backgroundColor: colors.primaryLight,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: radius.pill,
+    marginLeft: 6,
+  },
+  changeBtnText: { color: colors.primaryDark, fontSize: 12, fontWeight: '700' },
 
   search: {
     flexDirection: 'row',
@@ -269,7 +310,6 @@ const s = StyleSheet.create({
   },
   catName: { marginTop: 6, fontSize: 12, color: colors.text, fontWeight: '600', textAlign: 'center' },
 
-  // Mục món bán chạy
   featuredSection: { marginTop: spacing.lg, marginBottom: spacing.sm },
   sectionHeaderRow: {
     flexDirection: 'row',

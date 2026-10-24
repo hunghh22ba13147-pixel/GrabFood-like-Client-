@@ -21,12 +21,21 @@ export const api = {
   getRestaurant: (id: string) => delay((restaurants as Restaurant[]).find((r) => r.id === id)),
   getDishes: (restaurantId: string) => delay((dishes as Dish[]).filter((d) => d.restaurantId === restaurantId)),
   getFeaturedDishes: () => {
-    // Lấy danh sách các món best-seller đại diện để hiển thị mục Món bán chạy ở Home
-    const bestSellerNames = ['Trà sữa trân châu', 'Trà đào cam sả', 'Cơm sườn bì chả', 'Phở bò tái', 'Bún chả', 'Gà rán 2 miếng', 'Burger bò phô mai'];
+    // Lấy đại diện các món best seller đặc sắc nhất từ các quán
+    const featuredNames = [
+      'Trà sữa Phúc Long',
+      'Sữa tươi trân châu đường đen',
+      'Cơm tấm sườn nướng Cali',
+      'Cơm gà luộc Hải Nam',
+      'Phở bò tái lăn truyền thống',
+      'Bún chả đặc biệt (Chả miếng + Chả băm)',
+      'Combo Gà Rán Giòn Cay (2 Miếng)',
+      'Pizza 4 Loại Phô Mai (4 Cheese)',
+    ];
     const seen = new Set<string>();
     const list: Dish[] = [];
     for (const d of dishes as Dish[]) {
-      if (bestSellerNames.includes(d.name) && !seen.has(d.name)) {
+      if (featuredNames.includes(d.name) && !seen.has(d.name)) {
         seen.add(d.name);
         list.push(d);
       }
