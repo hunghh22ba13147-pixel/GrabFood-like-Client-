@@ -91,6 +91,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     await save(next);
   },
   login: async (email, password) => {
+    if (!isFirebaseConfigured) {
+      // Chế độ demo (chưa cấu hình Firebase): chấp nhận mọi email hợp lệ + mật khẩu >= 6 ký tự.
+      if (!email.includes('@') || password.length < 6) throw new Error('auth/invalid-credential');
+      const saved = await loadSavedAuth();
+      const prev = saved.user?.email === email.trim().toLowerCase() ? saved.user : null;
+      const user: User = prev ?? {
+        id: 'demo-user', name: email.split('@')[0], email: email.trim().toLowerCase(),
+        phone: '0900000000', address: '1 Lê Lợi, Quận 1, TP.HCM', addresses: [],
+      };
+      const next = { user, onboardingComplete: true };
+      set(next);
+      await save(next);
+      return 'signed-in';
+    }
     try {
       const auth = requireFirebaseAuth();
       const credential = await signInWithEmailAndPassword(auth, email.trim().toLowerCase(), password);
@@ -111,6 +125,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   register: async (name, email, password) => {
+    if (!isFirebaseConfigured) {
+      // Chế độ demo: tạo tài khoản cục bộ (không gửi email xác minh), rồi cho đăng nhập.
+      const user: User = { id: 'demo-user', name: name.trim(), email: email.trim().toLowerCase(), phone: '', address: '1 Lê Lợi, Quận 1, TP.HCM', addresses: [] };
+      await save({ user, onboardingComplete: true });
+      set({ user: null, onboardingComplete: true });
+      return;
+    }
     const auth = requireFirebaseAuth();
     try {
       auth.languageCode = 'vi';

@@ -27,6 +27,7 @@ import {
 import OptionGroupSection from './OptionGroupSection';
 import QuantityStepper from './QuantityStepper';
 import { SelectedOption } from './restaurantMenuTypes';
+import { showToast } from '../../components/Toast';
 
 type DishOptionsScreenProps = NativeStackScreenProps<RootStackParamList, 'DishOptions'>;
 
@@ -95,6 +96,7 @@ export default function DishOptionsScreen({ navigation, route }: DishOptionsScre
       cartItem.selectedOptions,
       cartItem.note,
     );
+    showToast('Đã thêm vào giỏ hàng');
     navigation.goBack();
   };
 

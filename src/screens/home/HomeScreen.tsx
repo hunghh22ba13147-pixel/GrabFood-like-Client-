@@ -7,6 +7,7 @@ import { Category, Restaurant } from '../../models/types';
 import { useAuthStore } from '../../store/authStore';
 import RestaurantCard from '../../components/RestaurantCard';
 import CartFab from '../../components/CartFab';
+import SkeletonList from '../../components/SkeletonList';
 import { useNav } from '../../components/Placeholder';
 import { colors, radius, spacing } from '../../theme';
 
@@ -64,7 +65,7 @@ export default function HomeScreen() {
         <Text style={s.address} numberOfLines={1}>{address}</Text>
       </View>
       {!list ? (
-        <ActivityIndicator style={{ marginTop: 80 }} color={colors.primary} size="large" />
+        <SkeletonList />
       ) : (
         <FlatList
           data={list}

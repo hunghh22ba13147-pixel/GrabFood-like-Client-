@@ -6,6 +6,7 @@ import { api } from '../../services/api';
 import { Category, Restaurant } from '../../models/types';
 import RestaurantCard from '../../components/RestaurantCard';
 import CartFab from '../../components/CartFab';
+import SkeletonList from '../../components/SkeletonList';
 import { useNav } from '../../components/Placeholder';
 import { colors, radius, spacing } from '../../theme';
 
@@ -46,7 +47,7 @@ export default function SearchScreen() {
       </View>
 
       {!list ? (
-        <ActivityIndicator style={{ marginTop: 60 }} color={colors.primary} size="large" />
+        <SkeletonList />
       ) : (
         <FlatList
           data={list}
