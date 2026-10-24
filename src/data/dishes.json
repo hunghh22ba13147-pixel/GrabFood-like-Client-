@@ -3,7 +3,7 @@
     "id": "r1-d1",
     "restaurantId": "r1",
     "name": "Trà sữa trân châu",
-    "description": "Trà sữa truyền thống",
+    "description": "Trà sữa truyền thống kèm trân châu dẻo dai",
     "price": 45000,
     "group": "Best seller",
     "image": "https://images.unsplash.com/photo-1558857563-b371033873b8?w=400&h=400&fit=crop&q=80",
@@ -16,12 +16,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -44,7 +44,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -55,10 +55,10 @@
     "id": "r1-d2",
     "restaurantId": "r1",
     "name": "Trà đào cam sả",
-    "description": "Thanh mát, giải nhiệt",
+    "description": "Hương vị đào tươi thanh mát, sả ngát thơm",
     "price": 49000,
     "group": "Best seller",
-    "image": "https://images.unsplash.com/photo-1497534446932-c925b458314e?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=400&h=400&fit=crop&q=80",
     "options": [
       {
         "id": "size",
@@ -68,12 +68,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -96,7 +96,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -107,7 +107,7 @@
     "id": "r1-d3",
     "restaurantId": "r1",
     "name": "Hồng trà macchiato",
-    "description": "Lớp kem béo mịn",
+    "description": "Hồng trà thơm đậm kèm lớp kem cheese béo ngậy",
     "price": 52000,
     "group": "Trà",
     "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop&q=80",
@@ -120,12 +120,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -148,7 +148,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -159,10 +159,10 @@
     "id": "r1-d4",
     "restaurantId": "r1",
     "name": "Matcha latte",
-    "description": "Matcha Nhật Bản",
+    "description": "Bột matcha Nhật Bản nguyên chất hòa quyện sữa tươi",
     "price": 55000,
     "group": "Trà",
-    "image": "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=400&h=400&fit=crop&q=80",
     "options": [
       {
         "id": "size",
@@ -172,12 +172,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -200,7 +200,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -211,7 +211,7 @@
     "id": "r2-d1",
     "restaurantId": "r2",
     "name": "Trà sữa trân châu",
-    "description": "Trà sữa truyền thống",
+    "description": "Trà sữa truyền thống kèm trân châu dẻo dai",
     "price": 45000,
     "group": "Best seller",
     "image": "https://images.unsplash.com/photo-1558857563-b371033873b8?w=400&h=400&fit=crop&q=80",
@@ -224,12 +224,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -252,7 +252,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -263,10 +263,10 @@
     "id": "r2-d2",
     "restaurantId": "r2",
     "name": "Trà đào cam sả",
-    "description": "Thanh mát, giải nhiệt",
+    "description": "Hương vị đào tươi thanh mát, sả ngát thơm",
     "price": 49000,
     "group": "Best seller",
-    "image": "https://images.unsplash.com/photo-1497534446932-c925b458314e?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=400&h=400&fit=crop&q=80",
     "options": [
       {
         "id": "size",
@@ -276,12 +276,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -304,7 +304,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -315,7 +315,7 @@
     "id": "r2-d3",
     "restaurantId": "r2",
     "name": "Hồng trà macchiato",
-    "description": "Lớp kem béo mịn",
+    "description": "Hồng trà thơm đậm kèm lớp kem cheese béo ngậy",
     "price": 52000,
     "group": "Trà",
     "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop&q=80",
@@ -328,12 +328,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -356,7 +356,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -367,10 +367,10 @@
     "id": "r2-d4",
     "restaurantId": "r2",
     "name": "Matcha latte",
-    "description": "Matcha Nhật Bản",
+    "description": "Bột matcha Nhật Bản nguyên chất hòa quyện sữa tươi",
     "price": 55000,
     "group": "Trà",
-    "image": "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=400&h=400&fit=crop&q=80",
     "options": [
       {
         "id": "size",
@@ -380,12 +380,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -408,7 +408,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -419,7 +419,7 @@
     "id": "r3-d1",
     "restaurantId": "r3",
     "name": "Trà sữa trân châu",
-    "description": "Trà sữa truyền thống",
+    "description": "Trà sữa truyền thống kèm trân châu dẻo dai",
     "price": 45000,
     "group": "Best seller",
     "image": "https://images.unsplash.com/photo-1558857563-b371033873b8?w=400&h=400&fit=crop&q=80",
@@ -432,12 +432,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -460,7 +460,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -471,10 +471,10 @@
     "id": "r3-d2",
     "restaurantId": "r3",
     "name": "Trà đào cam sả",
-    "description": "Thanh mát, giải nhiệt",
+    "description": "Hương vị đào tươi thanh mát, sả ngát thơm",
     "price": 49000,
     "group": "Best seller",
-    "image": "https://images.unsplash.com/photo-1497534446932-c925b458314e?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=400&h=400&fit=crop&q=80",
     "options": [
       {
         "id": "size",
@@ -484,12 +484,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -512,7 +512,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -523,7 +523,7 @@
     "id": "r3-d3",
     "restaurantId": "r3",
     "name": "Hồng trà macchiato",
-    "description": "Lớp kem béo mịn",
+    "description": "Hồng trà thơm đậm kèm lớp kem cheese béo ngậy",
     "price": 52000,
     "group": "Trà",
     "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop&q=80",
@@ -536,12 +536,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -564,7 +564,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -575,10 +575,10 @@
     "id": "r3-d4",
     "restaurantId": "r3",
     "name": "Matcha latte",
-    "description": "Matcha Nhật Bản",
+    "description": "Bột matcha Nhật Bản nguyên chất hòa quyện sữa tươi",
     "price": 55000,
     "group": "Trà",
-    "image": "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=400&h=400&fit=crop&q=80",
     "options": [
       {
         "id": "size",
@@ -588,12 +588,12 @@
         "choices": [
           {
             "id": "M",
-            "name": "M",
+            "name": "Size M",
             "price": 0
           },
           {
             "id": "L",
-            "name": "L",
+            "name": "Size L",
             "price": 7000
           }
         ]
@@ -616,7 +616,7 @@
           },
           {
             "id": "pudding",
-            "name": "Pudding",
+            "name": "Pudding trứng",
             "price": 10000
           }
         ]
@@ -627,67 +627,67 @@
     "id": "r4-d1",
     "restaurantId": "r4",
     "name": "Cơm sườn bì chả",
-    "description": "Sườn nướng than",
+    "description": "Sườn nướng than hoa mềm thơm đậm đà",
     "price": 55000,
     "group": "Món chính",
-    "image": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r4-d2",
     "restaurantId": "r4",
     "name": "Cơm gà xối mỡ",
-    "description": "Da giòn thịt mềm",
+    "description": "Đùi gà giòn rụm bên ngoài mọng nước bên trong",
     "price": 50000,
     "group": "Món chính",
-    "image": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r4-d3",
     "restaurantId": "r4",
     "name": "Canh chua",
-    "description": "Canh chua cá",
+    "description": "Canh chua cá bông lau giải nhiệt",
     "price": 25000,
     "group": "Món phụ",
-    "image": "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1548946526-f69e2424cf45?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r5-d1",
     "restaurantId": "r5",
     "name": "Cơm sườn bì chả",
-    "description": "Sườn nướng than",
+    "description": "Sườn nướng than hoa mềm thơm đậm đà",
     "price": 55000,
     "group": "Món chính",
-    "image": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r5-d2",
     "restaurantId": "r5",
     "name": "Cơm gà xối mỡ",
-    "description": "Da giòn thịt mềm",
+    "description": "Đùi gà giòn rụm bên ngoài mọng nước bên trong",
     "price": 50000,
     "group": "Món chính",
-    "image": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r5-d3",
     "restaurantId": "r5",
     "name": "Canh chua",
-    "description": "Canh chua cá",
+    "description": "Canh chua cá bông lau giải nhiệt",
     "price": 25000,
     "group": "Món phụ",
-    "image": "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1548946526-f69e2424cf45?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r6-d1",
     "restaurantId": "r6",
     "name": "Phở bò tái",
-    "description": "Nước dùng 12 tiếng",
+    "description": "Bò mềm ngọt, nước dùng ninh xương 12 tiếng",
     "price": 60000,
     "group": "Món chính",
     "image": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=400&h=400&fit=crop&q=80",
@@ -697,27 +697,27 @@
     "id": "r6-d2",
     "restaurantId": "r6",
     "name": "Bún chả",
-    "description": "Chả nướng than hoa",
+    "description": "Chả nướng than hoa đượm vị truyền thống Hà Nội",
     "price": 55000,
     "group": "Món chính",
-    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r6-d3",
     "restaurantId": "r6",
     "name": "Nem rán",
-    "description": "4 cái / phần",
+    "description": "Nem giòn rụm nhân thịt nấm chấm nước mắm tỏi ớt",
     "price": 30000,
     "group": "Món phụ",
-    "image": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r7-d1",
     "restaurantId": "r7",
     "name": "Phở bò tái",
-    "description": "Nước dùng 12 tiếng",
+    "description": "Bò mềm ngọt, nước dùng ninh xương 12 tiếng",
     "price": 60000,
     "group": "Món chính",
     "image": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=400&h=400&fit=crop&q=80",
@@ -727,47 +727,47 @@
     "id": "r7-d2",
     "restaurantId": "r7",
     "name": "Bún chả",
-    "description": "Chả nướng than hoa",
+    "description": "Chả nướng than hoa đượm vị truyền thống Hà Nội",
     "price": 55000,
     "group": "Món chính",
-    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r7-d3",
     "restaurantId": "r7",
     "name": "Nem rán",
-    "description": "4 cái / phần",
+    "description": "Nem giòn rụm nhân thịt nấm chấm nước mắm tỏi ớt",
     "price": 30000,
     "group": "Món phụ",
-    "image": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r8-d1",
     "restaurantId": "r8",
     "name": "Gà rán 2 miếng",
-    "description": "Gà giòn cay",
+    "description": "2 miếng gà rán giòn cay nóng hổi đậm vị",
     "price": 69000,
     "group": "Combo",
-    "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1562967914-608f82629710?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r8-d2",
     "restaurantId": "r8",
     "name": "Burger bò phô mai",
-    "description": "Bò Úc",
+    "description": "Thịt bò Úc nướng kèm phô mai Cheddar béo ngậy",
     "price": 59000,
     "group": "Combo",
-    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r8-d3",
     "restaurantId": "r8",
     "name": "Khoai tây chiên",
-    "description": "Size vừa",
+    "description": "Khoai tây chiên giòn rắc muối lắc bơ",
     "price": 25000,
     "group": "Món phụ",
     "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=400&fit=crop&q=80",
@@ -777,27 +777,27 @@
     "id": "r9-d1",
     "restaurantId": "r9",
     "name": "Gà rán 2 miếng",
-    "description": "Gà giòn cay",
+    "description": "2 miếng gà rán giòn cay nóng hổi đậm vị",
     "price": 69000,
     "group": "Combo",
-    "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1562967914-608f82629710?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r9-d2",
     "restaurantId": "r9",
     "name": "Burger bò phô mai",
-    "description": "Bò Úc",
+    "description": "Thịt bò Úc nướng kèm phô mai Cheddar béo ngậy",
     "price": 59000,
     "group": "Combo",
-    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r9-d3",
     "restaurantId": "r9",
     "name": "Khoai tây chiên",
-    "description": "Size vừa",
+    "description": "Khoai tây chiên giòn rắc muối lắc bơ",
     "price": 25000,
     "group": "Món phụ",
     "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=400&fit=crop&q=80",
@@ -807,27 +807,27 @@
     "id": "r10-d1",
     "restaurantId": "r10",
     "name": "Gà rán 2 miếng",
-    "description": "Gà giòn cay",
+    "description": "2 miếng gà rán giòn cay nóng hổi đậm vị",
     "price": 69000,
     "group": "Combo",
-    "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1562967914-608f82629710?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r10-d2",
     "restaurantId": "r10",
     "name": "Burger bò phô mai",
-    "description": "Bò Úc",
+    "description": "Thịt bò Úc nướng kèm phô mai Cheddar béo ngậy",
     "price": 59000,
     "group": "Combo",
-    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=400&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400&h=400&fit=crop&q=80",
     "options": []
   },
   {
     "id": "r10-d3",
     "restaurantId": "r10",
     "name": "Khoai tây chiên",
-    "description": "Size vừa",
+    "description": "Khoai tây chiên giòn rắc muối lắc bơ",
     "price": 25000,
     "group": "Món phụ",
     "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=400&fit=crop&q=80",
