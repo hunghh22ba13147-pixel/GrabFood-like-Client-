@@ -41,4 +41,6 @@ export interface Order {
   status: OrderStatus; createdAt: number;
 }
 
-export interface User { id: string; name: string; email: string; phone: string; address: string }
+export interface SavedAddress { id: string; label: string; address: string; latitude?: number; longitude?: number; placeId?: string }
+export interface User { id: string; name: string; email: string; phone: string; address: string; addresses?: SavedAddress[] }
+
