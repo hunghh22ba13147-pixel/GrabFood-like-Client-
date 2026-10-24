@@ -185,7 +185,7 @@ export default function DishOptionsScreen({ navigation, route }: DishOptionsScre
 
 const styles = StyleSheet.create({
   root: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.45)' },
+  backdrop: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.45)' },
   sheetWrap: { maxHeight: '88%' },
   sheet: {
     backgroundColor: colors.bg,

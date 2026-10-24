@@ -47,7 +47,7 @@ export default function AddressPicker({ visible, onClose, onSelect }: { visible:
       {loading && <ActivityIndicator color="#00a86b" style={{ margin: 8 }} />}{!!error && <Text style={styles.error}>{error}</Text>}
       {results.length > 0 && <View style={styles.results}>{results.map((item) => <Pressable key={String(item.properties.osm_id) + item.geometry.coordinates.join(',')} onPress={() => choose(item)} style={styles.result}><Text style={styles.resultTitle}>{item.properties.name || item.properties.street || 'Địa điểm'}</Text><Text style={styles.resultSubtitle}>{[item.properties.street, item.properties.district, item.properties.city || item.properties.state].filter(Boolean).join(', ')}</Text></Pressable>)}</View>}
       <MapView ref={map} style={styles.map} initialRegion={HANOI} onPress={(event) => { const { latitude, longitude } = event.nativeEvent.coordinate; setSelected({ address: query || 'Vị trí đã chọn trên bản đồ', latitude, longitude, placeId: '' }); }}>
-        <UrlTile urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png" maximumZ={19} userAgent="GrabFoodClient/1.0" />
+        <UrlTile urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png" maximumZ={19} {...({ userAgent: "GrabFoodClient/1.0" } as object)} />
         {selected && <Marker coordinate={{ latitude: selected.latitude, longitude: selected.longitude }} />}
       </MapView>
       <Text style={styles.attribution}>© OpenStreetMap contributors · Tìm kiếm: Photon / komoot</Text>

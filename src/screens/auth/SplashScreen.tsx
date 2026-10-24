@@ -11,7 +11,7 @@ export default function SplashScreen() {
     let active = true;
     hydrate().finally(async () => {
       if (!active) return;
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       const { user, onboardingComplete } = useAuthStore.getState();
       navigation.reset({ index: 0, routes: [{ name: user ? 'Tabs' : onboardingComplete ? 'Login' : 'Onboarding' }] });
     });
