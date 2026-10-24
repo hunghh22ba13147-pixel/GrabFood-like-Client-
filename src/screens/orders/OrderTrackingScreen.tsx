@@ -41,7 +41,7 @@ export default function OrderTrackingScreen({ route }: any) {
         {STATUS_FLOW.map((s, i) => (
           <View key={s} style={styles.stepItem}>
             <View style={[styles.circle, i <= currentIdx ? styles.circleDone : styles.circleTodo]}>
-              <Text style={styles.circleText}>{i < currentIdx ? '✓' : i + 1}</Text>
+              <Text style={styles.circleText}>{i < currentIdx || isDone ? '✓' : i + 1}</Text>
             </View>
             <Text style={[styles.stepLabel, i <= currentIdx ? styles.labelDone : styles.labelTodo]}>
               {STATUS_LABEL[s]}
@@ -54,7 +54,7 @@ export default function OrderTrackingScreen({ route }: any) {
       <View style={styles.card}>
         <Text style={styles.restaurant}>{order.restaurant?.name ?? 'Quán ăn'}</Text>
         <Text style={styles.info}>Số món: {order.items?.length ?? 0}</Text>
-        <Text style={styles.info}>Thanh toán: {order.paymentMethod}</Text>
+        <Text style={styles.info}>Thanh toán: {order.paymentMethod === 'cash' ? 'Tiền mặt' : 'Ví điện tử'}</Text>
         <Text style={styles.info}>Giao đến: {order.address}</Text>
         <Text style={styles.info}>Trạng thái: {STATUS_LABEL[order.status]}</Text>
         <Text style={styles.total}>Tổng: {getTotal(order).toLocaleString('vi-VN')}đ</Text>
@@ -75,7 +75,7 @@ export default function OrderTrackingScreen({ route }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 16, backgroundColor: '#fff', width: '100%', maxWidth: 520, alignSelf: 'center' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
   empty: { fontSize: 16, color: '#888' },
   title: { fontSize: 22, fontWeight: 'bold', marginBottom: 24, textAlign: 'center' },
