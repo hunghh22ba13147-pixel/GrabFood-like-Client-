@@ -43,6 +43,7 @@ export default function DishOptionsScreen({ navigation, route }: DishOptionsScre
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
   const addToCart = useCartStore((state) => state.addToCart);
   const clearCart = useCartStore((state) => state.clear);
+  const currentCartRestaurant = useCartStore((state) => state.restaurant);
   const needsConfirmSwitch = useCartStore((state) => state.needsConfirmSwitch);
 
   useEffect(() => {
@@ -108,13 +109,15 @@ export default function DishOptionsScreen({ navigation, route }: DishOptionsScre
       return;
     }
     if (needsConfirmSwitch(restaurant.id)) {
+      const prevName = currentCartRestaurant?.name || 'quán trước đó';
       Alert.alert(
-        'Đổi quán?',
-        'Bạn có muốn xóa giỏ hàng hiện tại để tạo đơn mới tại quán này không?',
+        'Bạn muốn đặt món ở quán mới?',
+        `Giỏ hàng của bạn đang có món của "${prevName}". GrabFood chỉ hỗ trợ đặt 1 quán mỗi đơn.\n\nBạn có muốn xoá giỏ hàng hiện tại để đặt tại "${restaurant.name}" không?`,
         [
-          { text: 'Huỷ', style: 'cancel' },
+          { text: 'Giữ món cũ', style: 'cancel' },
           {
-            text: 'Đồng ý',
+            text: 'Tạo đơn mới',
+            style: 'destructive',
             onPress: () => {
               clearCart();
               commitAddToCart(restaurant, dish);
