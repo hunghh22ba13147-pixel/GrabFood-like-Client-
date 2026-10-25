@@ -35,7 +35,7 @@ const BANNERS = [
 export default function HomeScreen() {
   const nav = useNav();
   const { width } = useWindowDimensions();
-  const address = useAuthStore((s) => s.user?.address) ?? '1 Lê Lợi, Quận 1, TP.HCM';
+  const address = useAuthStore((s) => s.user?.address) ?? '18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội';
   const updateProfile = useAuthStore((s) => s.updateProfile);
 
   const [cats, setCats] = useState<Category[]>([]);

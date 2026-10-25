@@ -8,7 +8,7 @@
     "distanceKm": 0.8,
     "etaMin": 15,
     "deliveryFee": 8000,
-    "address": "30 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "25 Nhà Thờ, Hàng Trống, Hoàn Kiếm, Hà Nội",
     "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80",
     "promo": "Giảm 15%"
   },
@@ -21,7 +21,7 @@
     "distanceKm": 1.2,
     "etaMin": 20,
     "deliveryFee": 8000,
-    "address": "44 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "47 Hàng Bài, Tràng Tiền, Hoàn Kiếm, Hà Nội",
     "image": "https://images.unsplash.com/photo-1497534446932-c925b458314e?w=600&h=400&fit=crop&q=80",
     "promo": null
   },
@@ -34,7 +34,7 @@
     "distanceKm": 2.1,
     "etaMin": 20,
     "deliveryFee": 11000,
-    "address": "78 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "56 Lý Thường Kiệt, Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
     "image": "https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?w=600&h=400&fit=crop&q=80",
     "promo": "Giảm 15%"
   },
@@ -47,7 +47,7 @@
     "distanceKm": 1.5,
     "etaMin": 25,
     "deliveryFee": 11000,
-    "address": "56 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "128 Bà Triệu, Hàng Bài, Hai Bà Trưng, Hà Nội",
     "image": "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&h=400&fit=crop&q=80",
     "promo": null
   },
@@ -60,7 +60,7 @@
     "distanceKm": 2.8,
     "etaMin": 30,
     "deliveryFee": 14000,
-    "address": "104 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "88 Phố Huế, Ngô Thì Nhậm, Hai Bà Trưng, Hà Nội",
     "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=400&fit=crop&q=80",
     "promo": null
   },
@@ -73,7 +73,7 @@
     "distanceKm": 1,
     "etaMin": 20,
     "deliveryFee": 8000,
-    "address": "37 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "13 Lò Đúc, Phạm Đình Hổ, Hai Bà Trưng, Hà Nội",
     "image": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&h=400&fit=crop&q=80",
     "promo": "Giảm 15%"
   },
@@ -86,7 +86,7 @@
     "distanceKm": 3.2,
     "etaMin": 30,
     "deliveryFee": 14000,
-    "address": "118 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "24 Lê Văn Hưu, Phan Chu Trinh, Hai Bà Trưng, Hà Nội",
     "image": "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=600&h=400&fit=crop&q=80",
     "promo": "Giảm 15%"
   },
@@ -99,7 +99,7 @@
     "distanceKm": 1.9,
     "etaMin": 25,
     "deliveryFee": 11000,
-    "address": "70 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "292 Tây Sơn, Trung Liệt, Đống Đa, Hà Nội",
     "image": "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&h=400&fit=crop&q=80",
     "promo": null
   },
@@ -112,7 +112,7 @@
     "distanceKm": 2.4,
     "etaMin": 25,
     "deliveryFee": 11000,
-    "address": "89 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "18 Hoàng Quốc Việt, Nghĩa Đô, Cầu Giấy, Hà Nội",
     "image": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=600&h=400&fit=crop&q=80",
     "promo": null
   },
@@ -125,7 +125,7 @@
     "distanceKm": 3.5,
     "etaMin": 35,
     "deliveryFee": 17000,
-    "address": "130 Nguyễn Huệ, Quận 1, TP.HCM",
+    "address": "11B Tràng Tiền, Hoàn Kiếm, Hà Nội",
     "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop&q=80",
     "promo": "Giảm 15%"
   }

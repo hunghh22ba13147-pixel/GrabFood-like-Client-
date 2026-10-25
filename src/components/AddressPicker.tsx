@@ -15,6 +15,7 @@ import MapView, { Marker, UrlTile, Region } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, radius, shadow, spacing } from '../theme';
 
+// Vùng trung tâm Hà Nội
 const HANOI: Region = { latitude: 21.0285, longitude: 105.8542, latitudeDelta: 0.08, longitudeDelta: 0.08 };
 
 export type PickedAddress = { address: string; latitude: number; longitude: number; placeId: string };
@@ -27,42 +28,49 @@ type PlaceResult = {
   longitude: number;
 };
 
-// Danh sách địa chỉ mẫu phổ biến tại Hà Nội & TP.HCM để người dùng bấm chọn nhanh 1-chạm
-const QUICK_SUGGESTIONS: PlaceResult[] = [
+// Danh sách địa chỉ phổ biến mẫu tại Hà Nội để bấm chọn 1 chạm
+const HANOI_QUICK_SUGGESTIONS: PlaceResult[] = [
   {
-    placeId: 's1',
+    placeId: 'hn-1',
+    name: '18 Hoàng Quốc Việt',
+    fullAddress: '18 Hoàng Quốc Việt, Nghĩa Đô, Cầu Giấy, Hà Nội',
+    latitude: 21.0465,
+    longitude: 105.7958,
+  },
+  {
+    placeId: 'hn-2',
     name: 'Ngõ Hoà Bình 7, Minh Khai',
     fullAddress: 'Ngõ Hoà Bình 7, Phố Minh Khai, Hai Bà Trưng, Hà Nội',
     latitude: 20.9984,
     longitude: 105.8625,
   },
   {
-    placeId: 's2',
+    placeId: 'hn-3',
     name: 'Đại học Bách Khoa Hà Nội',
     fullAddress: 'Số 1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội',
     latitude: 21.0049,
     longitude: 105.8431,
   },
   {
-    placeId: 's3',
-    name: 'Hồ Hoàn Kiếm (Bờ Hồ)',
-    fullAddress: 'Phố Đinh Tiên Hoàng, Hàng Trống, Hoàn Kiếm, Hà Nội',
+    placeId: 'hn-4',
+    name: 'Hồ Hoàn Kiếm (Phố Đi Bộ)',
+    fullAddress: 'Đinh Tiên Hoàng, Hàng Trống, Hoàn Kiếm, Hà Nội',
     latitude: 21.0287,
     longitude: 105.8523,
   },
   {
-    placeId: 's4',
-    name: '1 Lê Lợi, Bến Nghé, Quận 1',
-    fullAddress: '1 Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh',
-    latitude: 10.7769,
-    longitude: 106.7009,
+    placeId: 'hn-5',
+    name: 'Keangnam Landmark 72',
+    fullAddress: 'Phạm Hùng, Mễ Trì, Nam Từ Liêm, Hà Nội',
+    latitude: 21.0169,
+    longitude: 105.7839,
   },
   {
-    placeId: 's5',
-    name: 'Tòa nhà Landmark 81',
-    fullAddress: '720A Điện Biên Phủ, Phường 22, Bình Thạnh, TP. Hồ Chí Minh',
-    latitude: 10.795,
-    longitude: 106.7218,
+    placeId: 'hn-6',
+    name: 'Vincom Mega Mall Times City',
+    fullAddress: '458 Minh Khai, Vĩnh Tuy, Hai Bà Trưng, Hà Nội',
+    latitude: 20.9953,
+    longitude: 105.8675,
   },
 ];
 
@@ -95,14 +103,20 @@ export default function AddressPicker({
       setLoading(true);
       setError('');
       try {
-        // Sử dụng API tìm kiếm Nominatim OpenStreetMap chính xác, hỗ trợ tiếng Việt toàn diện
+        const raw = query.trim();
+        // Tự động gắn thêm hậu tố ", Hà Nội" để ép dịch vụ tìm kiếm tập trung hoàn toàn trong địa bàn Hà Nội
+        const searchQuery = raw.toLowerCase().includes('hà nội') || raw.toLowerCase().includes('ha noi')
+          ? raw
+          : `${raw}, Hà Nội`;
+
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          query.trim()
+          searchQuery
         )}&countrycodes=vn&addressdetails=1&limit=6`;
+
         const response = await fetch(url, {
           signal: controller.signal,
           headers: {
-            'User-Agent': 'GrabFoodClientDemo/1.0 (contact@grabfooddemo.internal)',
+            'User-Agent': 'GrabFoodHanoiClient/1.0 (demo@grabfoodhanoi.vn)',
             'Accept-Language': 'vi',
           },
         });
@@ -111,17 +125,26 @@ export default function AddressPicker({
         const data = await response.json();
 
         if (Array.isArray(data) && data.length > 0) {
-          const list: PlaceResult[] = data.map((item: any) => ({
-            placeId: String(item.place_id),
-            name: item.name || item.display_name.split(',')[0],
-            fullAddress: item.display_name,
-            latitude: parseFloat(item.lat),
-            longitude: parseFloat(item.lon),
-          }));
+          const list: PlaceResult[] = data.map((item: any) => {
+            const rawDisplay = item.display_name;
+            // Làm sạch địa chỉ, lược bớt mã bưu chính và đuôi Việt Nam cho gọn gàng dễ đọc
+            const cleanDisplay = rawDisplay
+              .replace(/,\s*\d{5}/g, '')
+              .replace(/,\s*Việt Nam/gi, '')
+              .trim();
+
+            return {
+              placeId: String(item.place_id),
+              name: item.name || cleanDisplay.split(',')[0],
+              fullAddress: cleanDisplay,
+              latitude: parseFloat(item.lat),
+              longitude: parseFloat(item.lon),
+            };
+          });
           setResults(list);
         } else {
           setResults([]);
-          setError('Không tìm thấy địa chỉ phù hợp. Bạn thử gõ tên đường hoặc chọn trên bản đồ.');
+          setError('Không tìm thấy địa điểm trên bản đồ. Bạn có thể bấm "Dùng trực tiếp" bên dưới.');
         }
       } catch (e: any) {
         if (!controller.signal.aborted) {
@@ -130,7 +153,7 @@ export default function AddressPicker({
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
-    }, 450);
+    }, 400);
 
     return () => {
       clearTimeout(timer);
@@ -153,8 +176,8 @@ export default function AddressPicker({
       {
         latitude: item.latitude,
         longitude: item.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
+        latitudeDelta: 0.012,
+        longitudeDelta: 0.012,
       },
       400
     );
@@ -163,8 +186,12 @@ export default function AddressPicker({
   const handleUseCurrentTypedAddress = () => {
     if (!query.trim()) return;
     Keyboard.dismiss();
+    const cleanAddress = query.trim().toLowerCase().includes('hà nội')
+      ? query.trim()
+      : `${query.trim()}, Hà Nội`;
+
     const place: PickedAddress = {
-      address: query.trim(),
+      address: cleanAddress,
       latitude: selected?.latitude || HANOI.latitude,
       longitude: selected?.longitude || HANOI.longitude,
       placeId: `custom-${Date.now()}`,
@@ -189,17 +216,20 @@ export default function AddressPicker({
           <Pressable onPress={close} hitSlop={10}>
             <Text style={styles.cancel}>Đóng</Text>
           </Pressable>
-          <Text style={styles.heading}>Chọn địa chỉ giao hàng</Text>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={styles.heading}>Địa chỉ giao hàng (Hà Nội)</Text>
+            <Text style={styles.subHeading}>Khu vực phục vụ: Thủ đô Hà Nội</Text>
+          </View>
           <View style={{ width: 40 }} />
         </View>
 
         {/* Ô nhập địa chỉ */}
         <View style={styles.searchBox}>
-          <Ionicons name="search" size={20} color={colors.muted} />
+          <Ionicons name="search" size={20} color={colors.primary} />
           <TextInput
             value={query}
             onChangeText={setQuery}
-            placeholder="Nhập địa chỉ (vd: Minh Khai, Cầu Giấy...)"
+            placeholder="Nhập phố, ngõ, số nhà tại Hà Nội…"
             placeholderTextColor="#82908a"
             style={styles.searchInput}
             autoCorrect={false}
@@ -211,8 +241,8 @@ export default function AddressPicker({
           )}
         </View>
 
-        {/* Nút bấm nhanh nếu người dùng gõ địa chỉ cụ thể và muốn dùng luôn */}
-        {query.trim().length > 3 && (
+        {/* Nút bấm nhanh nếu người dùng muốn dùng luôn địa chỉ vừa gõ */}
+        {query.trim().length >= 2 && (
           <TouchableOpacity
             style={styles.useTypedBtn}
             onPress={handleUseCurrentTypedAddress}
@@ -220,7 +250,7 @@ export default function AddressPicker({
           >
             <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
             <Text style={styles.useTypedText} numberOfLines={1}>
-              Dùng trực tiếp: <Text style={{ fontWeight: '800' }}>"{query}"</Text>
+              Dùng trực tiếp: <Text style={{ fontWeight: '800' }}>"{query.trim()}"</Text>
             </Text>
           </TouchableOpacity>
         )}
@@ -231,7 +261,7 @@ export default function AddressPicker({
         {/* Danh sách kết quả gợi ý tìm kiếm */}
         {results.length > 0 && (
           <View style={styles.resultsCard}>
-            <ScrollView keyboardShouldPersistTaps="handled" style={{ maxHeight: 200 }}>
+            <ScrollView keyboardShouldPersistTaps="handled" style={{ maxHeight: 220 }}>
               {results.map((item) => (
                 <TouchableOpacity
                   key={item.placeId}
@@ -251,12 +281,12 @@ export default function AddressPicker({
           </View>
         )}
 
-        {/* Mục gợi ý địa chỉ nhanh */}
+        {/* Gợi ý các địa điểm quen thuộc ở Hà Nội */}
         {results.length === 0 && !loading && (
           <View style={styles.quickWrap}>
-            <Text style={styles.quickLabel}>Gợi ý nhanh:</Text>
+            <Text style={styles.quickLabel}>Địa điểm quen thuộc ở Hà Nội:</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12 }}>
-              {QUICK_SUGGESTIONS.map((sug) => (
+              {HANOI_QUICK_SUGGESTIONS.map((sug) => (
                 <TouchableOpacity
                   key={sug.placeId}
                   style={styles.quickChip}
@@ -270,7 +300,7 @@ export default function AddressPicker({
           </View>
         )}
 
-        {/* Bản đồ tương tác */}
+        {/* Bản đồ tương tác tại Hà Nội */}
         <View style={{ flex: 1, position: 'relative' }}>
           <MapView
             ref={map}
@@ -279,7 +309,7 @@ export default function AddressPicker({
             onPress={(event) => {
               const { latitude, longitude } = event.nativeEvent.coordinate;
               setSelected({
-                address: query || 'Vị trí ghim trên bản đồ',
+                address: query ? `${query}, Hà Nội` : 'Vị trí đã ghim tại Hà Nội',
                 latitude,
                 longitude,
                 placeId: `pin-${Date.now()}`,
@@ -289,7 +319,7 @@ export default function AddressPicker({
             <UrlTile
               urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
               maximumZ={19}
-              {...({ userAgent: 'GrabFoodClientDemo/1.0' } as object)}
+              {...({ userAgent: 'GrabFoodHanoiClient/1.0' } as object)}
             />
             {selected && (
               <Marker
@@ -300,7 +330,7 @@ export default function AddressPicker({
             )}
           </MapView>
           <View style={styles.mapInstruction}>
-            <Text style={styles.mapInstructionText}>💡 Chạm vào bản đồ để ghim vị trí nhận hàng</Text>
+            <Text style={styles.mapInstructionText}>💡 Chạm vào bản đồ để ghim vị trí nhận hàng tại Hà Nội</Text>
           </View>
         </View>
 
@@ -336,7 +366,7 @@ export default function AddressPicker({
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg, paddingTop: 48 },
   header: {
-    height: 44,
+    height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -346,6 +376,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   heading: { fontSize: 16, fontWeight: '800', color: colors.text },
+  subHeading: { fontSize: 11, color: colors.primary, fontWeight: '600' },
   cancel: { color: colors.primary, fontWeight: '700', fontSize: 15 },
 
   searchBox: {

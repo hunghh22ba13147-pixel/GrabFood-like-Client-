@@ -21,7 +21,7 @@ export default function CheckoutScreen() {
   const cart = useCartStore();
   const user = useAuthStore((state) => state.user);
   const updateProfile = useAuthStore((state) => state.updateProfile);
-  const address = user?.address ?? '1 Lê Lợi, Quận 1, TP.HCM';
+  const address = user?.address ?? '18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội';
 
   const [payment, setPayment] = useState<PaymentMethod | null>('cash');
   const [showAddressPicker, setShowAddressPicker] = useState(false);
@@ -29,7 +29,7 @@ export default function CheckoutScreen() {
   const controllerRef = useRef<ReturnType<typeof createCheckoutController> | null>(null);
   if (!controllerRef.current) controllerRef.current = createCheckoutController({
     placeOrder: (payload) => useOrderStore.getState().placeOrder(payload),
-    getAddress: () => useAuthStore.getState().user?.address ?? '1 Lê Lợi, Quận 1, TP.HCM',
+    getAddress: () => useAuthStore.getState().user?.address ?? '18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội',
     openTracking: (orderId) => nav.replace('OrderTracking', { orderId }),
   });
   const controller = controllerRef.current;

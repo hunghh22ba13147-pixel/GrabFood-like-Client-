@@ -1,3 +1,16 @@
+
+const HANOI_ADDRESSES = {
+  r1: '25 Nhà Thờ, Hàng Trống, Hoàn Kiếm, Hà Nội', // Phúc Long
+  r2: '47 Hàng Bài, Tràng Tiền, Hoàn Kiếm, Hà Nội', // The Alley
+  r3: '56 Lý Thường Kiệt, Trần Hưng Đạo, Hoàn Kiếm, Hà Nội', // Gong Cha
+  r4: '128 Bà Triệu, Hàng Bài, Hai Bà Trưng, Hà Nội', // Cơm Tấm Cali
+  r5: '88 Phố Huế, Ngô Thì Nhậm, Hai Bà Trưng, Hà Nội', // Cơm Gà Hải Nam
+  r6: '13 Lò Đúc, Phạm Đình Hổ, Hai Bà Trưng, Hà Nội', // Phở Thìn Bờ Hồ
+  r7: '24 Lê Văn Hưu, Phan Chu Trinh, Hai Bà Trưng, Hà Nội', // Bún Chả Hương Liên (Obama)
+  r8: '292 Tây Sơn, Trung Liệt, Đống Đa, Hà Nội', // KFC Tây Sơn
+  r9: '18 Hoàng Quốc Việt, Nghĩa Đô, Cầu Giấy, Hà Nội', // Lotteria Hoàng Quốc Việt
+  r10: '11B Tràng Tiền, Hoàn Kiếm, Hà Nội', // Pizza 4P's Tràng Tiền
+};
 const fs = require('fs');
 const path = require('path');
 
@@ -46,7 +59,7 @@ const restaurants = R.map(([id, name, categoryId, rating, distanceKm, etaMin]) =
   distanceKm,
   etaMin,
   deliveryFee: 5000 + Math.round(distanceKm) * 3000,
-  address: `${Math.round(distanceKm * 37)} Nguyễn Huệ, Quận 1, TP.HCM`,
+  address: HANOI_ADDRESSES[id] || `${Math.round(distanceKm * 18)} Hoàng Quốc Việt, Cầu Giấy, Hà Nội`,
   image: U(RESTAURANT_IMG[id]),
   promo: rating >= 4.7 ? 'Giảm 15%' : null,
 }));

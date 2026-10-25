@@ -98,7 +98,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const prev = saved.user?.email === email.trim().toLowerCase() ? saved.user : null;
       const user: User = prev ?? {
         id: 'demo-user', name: email.split('@')[0], email: email.trim().toLowerCase(),
-        phone: '0900000000', address: '1 Lê Lợi, Quận 1, TP.HCM', addresses: [],
+        phone: '0900000000', address: '18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội', addresses: [],
       };
       const next = { user, onboardingComplete: true };
       set(next);
@@ -127,7 +127,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   register: async (name, email, password) => {
     if (!isFirebaseConfigured) {
       // Chế độ demo: tạo tài khoản cục bộ (không gửi email xác minh), rồi cho đăng nhập.
-      const user: User = { id: 'demo-user', name: name.trim(), email: email.trim().toLowerCase(), phone: '', address: '1 Lê Lợi, Quận 1, TP.HCM', addresses: [] };
+      const user: User = { id: 'demo-user', name: name.trim(), email: email.trim().toLowerCase(), phone: '', address: '18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội', addresses: [] };
       await save({ user, onboardingComplete: true });
       set({ user: null, onboardingComplete: true });
       return;
@@ -168,7 +168,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       name: 'Khách hàng',
       email: 'demo@grabfood.vn',
       phone: '0900000000',
-      address: '1 Lê Lợi, Quận 1, TP.HCM',
+      address: '18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội',
       addresses: [],
     };
     const firebaseUser = isFirebaseConfigured ? requireFirebaseAuth().currentUser : null;
