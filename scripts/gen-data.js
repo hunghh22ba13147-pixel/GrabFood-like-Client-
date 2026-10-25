@@ -8,7 +8,7 @@ const HANOI_ADDRESSES = {
   r6: '13 Lò Đúc, Phạm Đình Hổ, Hai Bà Trưng, Hà Nội', // Phở Thìn Bờ Hồ
   r7: '24 Lê Văn Hưu, Phan Chu Trinh, Hai Bà Trưng, Hà Nội', // Bún Chả Hương Liên (Obama)
   r8: '292 Tây Sơn, Trung Liệt, Đống Đa, Hà Nội', // KFC Tây Sơn
-  r9: '18 Hoàng Quốc Việt, Nghĩa Đô, Cầu Giấy, Hà Nội', // Lotteria Hoàng Quốc Việt
+  r9: '298 Cầu Giấy, Quan Hoa, Cầu Giấy, Hà Nội', // Lotteria Cầu Giấy
   r10: '11B Tràng Tiền, Hoàn Kiếm, Hà Nội', // Pizza 4P's Tràng Tiền
 };
 const fs = require('fs');
@@ -59,7 +59,7 @@ const restaurants = R.map(([id, name, categoryId, rating, distanceKm, etaMin]) =
   distanceKm,
   etaMin,
   deliveryFee: 5000 + Math.round(distanceKm) * 3000,
-  address: HANOI_ADDRESSES[id] || `${Math.round(distanceKm * 18)} Hoàng Quốc Việt, Cầu Giấy, Hà Nội`,
+  address: HANOI_ADDRESSES[id] || `${Math.round(distanceKm * 18)} Cầu Giấy, Hà Nội`,
   image: U(RESTAURANT_IMG[id]),
   promo: rating >= 4.7 ? 'Giảm 15%' : null,
 }));
