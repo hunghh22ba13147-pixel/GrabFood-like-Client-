@@ -163,10 +163,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
   updateProfile: async (changes) => {
     const current = get();
-    if (!current.user) return;
+    const baseUser: User = current.user ?? {
+      id: 'demo-user',
+      name: 'Khách hàng',
+      email: 'demo@grabfood.vn',
+      phone: '0900000000',
+      address: '1 Lê Lợi, Quận 1, TP.HCM',
+      addresses: [],
+    };
     const firebaseUser = isFirebaseConfigured ? requireFirebaseAuth().currentUser : null;
     if (firebaseUser && changes.name) await updateFirebaseProfile(firebaseUser, { displayName: changes.name });
-    const next = { user: { ...current.user, ...changes }, onboardingComplete: current.onboardingComplete };
+    const next = { user: { ...baseUser, ...changes }, onboardingComplete: current.onboardingComplete };
     set(next);
     await save(next);
   },
