@@ -14,7 +14,10 @@ const HANOI_ADDRESSES = {
 const fs = require('fs');
 const path = require('path');
 
-const U = (id, w = 600, h = 400) => `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&q=80`;
+const U = (id, w = 600, h = 400) => {
+  if (typeof id === 'string' && id.startsWith('http')) return id;
+  return `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&q=80`;
+};
 
 // 1. Ảnh mặt tiền quán ăn - Riêng biệt cho từng quán
 const RESTAURANT_IMG = {
@@ -69,53 +72,53 @@ const restaurants = R.map(([id, name, categoryId, rating, distanceKm, etaMin]) =
 const RESTAURANT_MENUS = {
   // Trà Sữa Phúc Long
   r1: [
-    ['Trà sữa Phúc Long', 45000, 'Best seller', 'Trà đen đậm vị truyền thống kết hợp sữa béo thơm', '1558857563-b371033873b8', true],
-    ['Trà đào cam sả Phúc Long', 52000, 'Best seller', 'Đào ngâm giòn ngọt thanh kết hợp hương sả nồng nàn', '1541544741938-0af808871cc0', true],
+    ['Trà sữa Phúc Long', 45000, 'Best seller', 'Trà đen đậm vị truyền thống kết hợp sữa béo thơm', 'https://images.pexels.com/photos/6412836/pexels-photo-6412836.jpeg?auto=compress&cs=tinysrgb&w=500', true],
+    ['Trà đào cam sả Phúc Long', 52000, 'Best seller', 'Đào ngâm giòn ngọt thanh kết hợp hương sả nồng nàn', 'https://images.unsplash.com/photo-1497534446932-c925b458314e?w=500&h=400&fit=crop&q=80', true],
     ['Trà vải sen', 49000, 'Trà trái cây', 'Hương sen thanh tao hòa cùng trái vải mọng nước', '1556679343-c7306c1976bc', true],
     ['Bánh croissant bơ tỏi', 28000, 'Bánh ngọt', 'Bánh sừng bò nướng bơ tỏi giòn tan nóng hổi', '1555507036-ab1f4038808a', false],
   ],
 
   // The Alley
   r2: [
-    ['Sữa tươi trân châu đường đen', 65000, 'Món đặc trưng', 'Đường đen Okinawa nấu dẻo kết hợp sữa tươi thanh trùng', '1576092768241-dec231879fc3', true],
-    ['Lục trà sữa trân châu', 55000, 'Trà sữa', 'Lục trà lài thơm ngát quyện trân châu đường đen', '1517256064527-09c73fc73e38', true],
+    ['Sữa tươi trân châu đường đen', 65000, 'Món đặc trưng', 'Đường đen Okinawa nấu dẻo kết hợp sữa tươi thanh trùng', '1558857563-b371033873b8', true],
+    ['Lục trà sữa trân châu', 55000, 'Trà sữa', 'Lục trà lài thơm ngát quyện trân châu đường đen', '1515823064-d6e0c04616a7', true],
     ['Trà xoài kem tuyết', 60000, 'Đá xay', 'Xoài cát tươi xay nhuyễn phủ lớp kem cheese mặn', '1546173159-315724a31696', true],
   ],
 
   // Gong Cha
   r3: [
-    ['Alisan Gong Cha Macchiato', 55000, 'Best seller', 'Trà Alisan thượng hạng phủ lớp váng sữa sánh mịn', '1556679343-c7306c1976bc', true],
-    ['Trà sữa ô long', 48000, 'Trà sữa', 'Trà ô long nướng Đài Loan hương vị đậm đà', '1558857563-b371033873b8', true],
+    ['Alisan Gong Cha Macchiato', 55000, 'Best seller', 'Trà Alisan thượng hạng phủ lớp váng sữa sánh mịn', 'https://images.pexels.com/photos/11160112/pexels-photo-11160112.jpeg?auto=compress&cs=tinysrgb&w=500', true],
+    ['Trà sữa ô long', 48000, 'Trà sữa', 'Trà ô long nướng Đài Loan hương vị đậm đà', '1572490122747-3968b75cc699', true],
     ['Trà chanh vàng bưởi đỏ', 50000, 'Trà trái cây', 'Vị chua ngọt sảng khoái vitamin C dồi dào', '1513558161293-cdaf765ed2fd', true],
   ],
 
   // Cơm Tấm Cali
   r4: [
     ['Cơm tấm sườn nướng Cali', 65000, 'Món chính', 'Sườn nướng than hoa mềm đẫm sốt bí truyền', '1544025162-d76694265947', false],
-    ['Cơm tấm sườn bì chả đặc biệt', 75000, 'Món chính', 'Đầy đủ sườn cây, bì thính, chả trứng hấp và trứng ốp la', '1569058242253-92a9c755a0ec', false],
-    ['Canh chua tôm lá giang', 30000, 'Canh phụ', 'Canh chua tôm tươi nấu lá giang chua dịu thanh mát', '1548946526-f69e2424cf45', false],
-    ['Chả giò tôm thịt (3 cuốn)', 35000, 'Món ăn kèm', 'Chả giò chiên vàng rụm chấm nước mắm chua ngọt', '1606491956689-2ea866880c84', false],
+    ['Cơm tấm sườn bì chả đặc biệt', 75000, 'Món chính', 'Đầy đủ sườn cây, bì thính, chả trứng hấp và trứng ốp la', '1603133872878-684f208fb84b', false],
+    ['Canh chua tôm lá giang', 30000, 'Canh phụ', 'Canh chua tôm tươi nấu lá giang chua dịu thanh mát', '1603105037880-880cd4edfb0d', false],
+    ['Chả giò tôm thịt (3 cuốn)', 35000, 'Món ăn kèm', 'Chả giò chiên vàng rụm chấm nước mắm chua ngọt', 'https://images.pexels.com/photos/8178762/pexels-photo-8178762.jpeg?auto=compress&cs=tinysrgb&w=500', false],
   ],
 
   // Cơm Gà Hải Nam
   r5: [
-    ['Cơm gà luộc Hải Nam', 58000, 'Món đặc trưng', 'Thịt gà luộc da vàng mọng nước, hạt cơm nấu nước luộc gà béo ngậy', '1589302168068-964664d93dc0', false],
+    ['Cơm gà luộc Hải Nam', 58000, 'Món đặc trưng', 'Thịt gà luộc da vàng mọng nước, hạt cơm nấu nước luộc gà béo ngậy', '1598515214211-89d3c73ae83b', false],
     ['Cơm gà xối mỡ đùi góc tư', 62000, 'Món chính', 'Đùi gà xối mỡ da giòn rụm chấm sốt gừng ớt', '1626645738196-c2a7c87a8f58', false],
-    ['Canh gà hầm nấm đông cô', 25000, 'Canh phụ', 'Canh gà thanh ngọt bổ dưỡng hầm cùng nấm tươi', '1547592180-85f173990554', false],
+    ['Canh gà hầm nấm đông cô', 25000, 'Canh phụ', 'Canh gà thanh ngọt bổ dưỡng hầm cùng nấm tươi', '1547592166-23ac45744acd', false],
   ],
 
   // Phở Thìn Bờ Hồ
   r6: [
     ['Phở bò tái lăn truyền thống', 65000, 'Món chính', 'Thịt bò xào lăn lửa lớn ngập hành hoa thơm nức mũi', '1582878826629-29b7ad1cdc43', false],
-    ['Phở nạm gầu giòn', 65000, 'Món chính', 'Gầu bò giòn sần sật, nước dùng ninh xương ngọt tự nhiên', '1569718212165-3a8278d5f624', false],
-    ['Quẩy giòn giòn ăn phở', 10000, 'Món ăn kèm', 'Quẩy vàng giòn rụm nhúng cùng nước dùng nóng hổi', '1573080496219-bb080dd4f877', false],
+    ['Phở nạm gầu giòn', 65000, 'Món chính', 'Gầu bò giòn sần sật, nước dùng ninh xương ngọt tự nhiên', 'https://images.pexels.com/photos/6646351/pexels-photo-6646351.jpeg?auto=compress&cs=tinysrgb&w=500', false],
+    ['Quẩy giòn giòn ăn phở', 10000, 'Món ăn kèm', 'Quẩy vàng giòn rụm nhúng cùng nước dùng nóng hổi', 'https://images.pexels.com/photos/36361401/pexels-photo-36361401/free-photo-of-delicious-churros-with-chocolate-dip-on-plate.jpeg?auto=compress&cs=tinysrgb&w=500', false],
     ['Trứng gà chần', 12000, 'Món ăn kèm', 'Trứng gà ta chần lòng đào bổ dưỡng', '1525351484163-7529414344d8', false],
   ],
 
   // Bún Chả Hương Liên (Bún chả Obama)
   r7: [
-    ['Bún chả đặc biệt (Chả miếng + Chả băm)', 60000, 'Món chính', 'Chả nướng than hoa đượm khói, nước chấm đu đủ tỏi ớt ấm nóng', '1509722747041-616f39b57569', false],
-    ['Nem cua bể hải sản', 40000, 'Món ăn kèm', 'Nem vuông giòn tan đẫm thịt cua bể tươi và tôm sú', '1606491956689-2ea866880c84', false],
+    ['Bún chả đặc biệt (Chả miếng + Chả băm)', 60000, 'Món chính', 'Chả nướng than hoa đượm khói, nước chấm đu đủ tỏi ớt ấm nóng', '1555126634-323283e090fa', false],
+    ['Nem cua bể hải sản', 40000, 'Món ăn kèm', 'Nem vuông giòn tan đẫm thịt cua bể tươi và tôm sú', 'https://images.pexels.com/photos/34623149/pexels-photo-34623149/free-photo-of-fresh-vietnamese-spring-rolls-with-dipping-sauce.jpeg?auto=compress&cs=tinysrgb&w=500', false],
     ['Bún thêm / Rau sống', 10000, 'Món phụ', 'Phần bún sợi nhỏ thanh mát và đĩa rau kinh giới thơm', '1540420773420-3366772f4999', false],
   ],
 
@@ -128,9 +131,9 @@ const RESTAURANT_MENUS = {
 
   // Lotteria
   r9: [
-    ['Gà rán sốt đậu ngọt', 75000, 'Gà sốt', 'Gà rán phủ nước sốt đậu ngọt bùi đặc trưng Lotteria', '1561758033-d89a9ad46330', false],
+    ['Gà rán sốt đậu ngọt', 75000, 'Gà sốt', 'Gà rán phủ nước sốt đậu ngọt bùi đặc trưng Lotteria', '1527477396000-e27163b481c2', false],
     ['Burger Bò Bulgogi Hàn Quốc', 55000, 'Burger', 'Bò nướng sốt Bulgogi trứ danh thơm ngọt đậm vị', '1568901346375-23c9450c58cd', false],
-    ['Khoai tây lắc phô mai', 35000, 'Món phụ', 'Khoai tây chiên lắc cùng bột phô mai béo ngậy', '1550547660-d9450f859349', false],
+    ['Khoai tây lắc phô mai', 35000, 'Món phụ', 'Khoai tây chiên lắc cùng bột phô mai béo ngậy', '1585109649139-366815a0d713', false],
   ],
 
   // Pizza 4P's
