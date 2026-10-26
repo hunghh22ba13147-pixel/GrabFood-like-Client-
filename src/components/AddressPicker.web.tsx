@@ -1,72 +1,330 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { colors, radius, shadow } from '../theme';
+import {
+  HanoiPlace,
+  searchHanoiDatabase,
+  searchOnlineNominatim,
+  HANOI_DATABASE,
+} from '../utils/hanoiLocations';
 
-// Bản web: react-native-maps không chạy trên web nên chỉ tìm địa chỉ bằng danh sách (không có bản đồ).
-const HANOI = { latitude: 21.0285, longitude: 105.8542 };
 export type PickedAddress = { address: string; latitude: number; longitude: number; placeId: string };
-type Feature = { properties: { name?: string; street?: string; housenumber?: string; district?: string; city?: string; state?: string; country?: string; osm_id?: string }; geometry: { coordinates: [number, number] } };
 
-export default function AddressPicker({ visible, onClose, onSelect }: { visible: boolean; onClose: () => void; onSelect: (place: PickedAddress) => void }) {
+const CATEGORY_CHIPS = ['Tất cả', 'Đại học', 'TTTM & Tòa nhà', 'Khu đô thị', 'Bệnh viện', 'Đường phố'];
+const DISTRICT_CHIPS = ['Tất cả quận', 'Cầu Giấy', 'Đống Đa', 'Hoàn Kiếm', 'Hai Bà Trưng', 'Thanh Xuân', 'Nam Từ Liêm', 'Hà Đông', 'Tây Hồ'];
+
+export default function AddressPicker({
+  visible,
+  onClose,
+  onSelect,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onSelect: (place: PickedAddress) => void;
+}) {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Feature[]>([]);
+  const [results, setResults] = useState<HanoiPlace[]>([]);
+  const [selected, setSelected] = useState<PickedAddress | null>(null);
   const [loading, setLoading] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('Tất cả');
+  const [activeDistrict, setActiveDistrict] = useState('Tất cả quận');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!visible || query.trim().length < 3) { setResults([]); return; }
-    const controller = new AbortController();
-    const timer = setTimeout(async () => {
-      setLoading(true); setError('');
-      try {
-        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&lat=${HANOI.latitude}&lon=${HANOI.longitude}&limit=6&lang=vi`;
-        const response = await fetch(url, { signal: controller.signal });
-        if (!response.ok) throw new Error('Chưa tìm được địa chỉ. Thử lại sau nhé.');
-        const data = await response.json(); setResults(data.features ?? []);
-      } catch (e) { if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Lỗi kết nối dịch vụ tìm kiếm.'); }
-      finally { if (!controller.signal.aborted) setLoading(false); }
-    }, 600);
-    return () => { clearTimeout(timer); controller.abort(); };
-  }, [query, visible]);
+    if (!visible) return;
 
-  const close = () => { setQuery(''); setResults([]); setError(''); onClose(); };
-  const choose = (feature: Feature) => {
-    const [longitude, latitude] = feature.geometry.coordinates;
-    const p = feature.properties;
-    const address = [p.housenumber, p.street || p.name, p.district, p.city || p.state, p.country].filter(Boolean).join(', ');
-    onSelect({ address, latitude, longitude, placeId: String(p.osm_id ?? `${latitude},${longitude}`) });
+    const trimmed = query.trim();
+    const districtFilter = activeDistrict === 'Tất cả quận' ? undefined : activeDistrict;
+    const categoryFilter = activeCategory === 'Tất cả' ? undefined : activeCategory;
+
+    // Tìm kiếm tức thời cục bộ
+    const localMatches = searchHanoiDatabase(trimmed, districtFilter, categoryFilter);
+
+    if (trimmed.length < 2) {
+      setResults(localMatches.slice(0, 10));
+      setLoading(false);
+      setError('');
+      return;
+    }
+
+    setResults(localMatches);
+
+    // Kích hoạt tìm trực tuyến
+    const controller = new AbortController();
+    setLoading(true);
+    setError('');
+
+    const timer = setTimeout(async () => {
+      try {
+        const onlineMatches = await searchOnlineNominatim(trimmed, controller.signal);
+        if (!controller.signal.aborted) {
+          const merged = [...localMatches];
+          for (const item of onlineMatches) {
+            const exists = merged.some(
+              (m) =>
+                m.name.toLowerCase() === item.name.toLowerCase() ||
+                (Math.abs(m.latitude - item.latitude) < 0.0005 &&
+                  Math.abs(m.longitude - item.longitude) < 0.0005)
+            );
+            if (!exists) merged.push(item);
+          }
+          setResults(merged);
+          if (merged.length === 0) {
+            setError('Chưa thấy địa chỉ chính xác. Bạn có thể bấm "Dùng trực tiếp" bên dưới.');
+          }
+        }
+      } catch (e: any) {
+        if (!controller.signal.aborted && localMatches.length === 0) {
+          setError('Dịch vụ trực tuyến đang bận. Bạn có thể bấm "Dùng trực tiếp".');
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }, 350);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query, activeCategory, activeDistrict, visible]);
+
+  const chooseItem = (item: HanoiPlace) => {
+    onSelect({
+      address: item.fullAddress,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      placeId: item.id,
+    });
     close();
+  };
+
+  const handleUseCurrentTypedAddress = () => {
+    if (!query.trim()) return;
+    const raw = query.trim();
+    const cleanAddress = raw.toLowerCase().includes('hà nội') || raw.toLowerCase().includes('ha noi')
+      ? raw
+      : `${raw}, Hà Nội`;
+
+    onSelect({
+      address: cleanAddress,
+      latitude: 21.0285,
+      longitude: 105.8542,
+      placeId: `custom-${Date.now()}`,
+    });
+    close();
+  };
+
+  const close = () => {
+    setQuery('');
+    setResults([]);
+    setSelected(null);
+    setError('');
+    setActiveCategory('Tất cả');
+    setActiveDistrict('Tất cả quận');
+    onClose();
   };
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={close}>
       <View style={s.container}>
+        {/* Header */}
         <View style={s.header}>
-          <Pressable onPress={close}><Text style={s.cancel}>Đóng</Text></Pressable>
-          <Text style={s.heading}>Chọn địa chỉ</Text>
+          <Pressable onPress={close}>
+            <Text style={s.cancel}>Đóng</Text>
+          </Pressable>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={s.heading}>Chọn địa chỉ (Hà Nội)</Text>
+            <Text style={s.subHeading}>Tra cứu toàn bộ quận huyện & địa danh</Text>
+          </View>
           <View style={{ width: 42 }} />
         </View>
-        <TextInput value={query} onChangeText={setQuery} placeholder="Nhập địa chỉ (từ 3 ký tự)…" style={s.search} />
-        {loading && <ActivityIndicator color="#00B14F" style={{ margin: 8 }} />}
+
+        {/* Ô tìm kiếm */}
+        <View style={s.searchBox}>
+          <Ionicons name="search" size={20} color={colors.primary} />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Tìm phố, trường học, TTTM, chung cư ở Hà Nội…"
+            placeholderTextColor="#82908a"
+            style={s.searchInput}
+          />
+          {query.length > 0 && (
+            <Pressable onPress={() => setQuery('')}>
+              <Ionicons name="close-circle" size={18} color={colors.muted} />
+            </Pressable>
+          )}
+        </View>
+
+        {/* Thanh lọc Quận & Thể loại */}
+        <View style={s.filterBar}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12 }}>
+            {DISTRICT_CHIPS.map((dist) => (
+              <TouchableOpacity
+                key={dist}
+                style={[s.filterChip, activeDistrict === dist && s.filterChipActive]}
+                onPress={() => setActiveDistrict(dist)}
+              >
+                <Text style={[s.filterChipText, activeDistrict === dist && s.filterChipTextActive]}>
+                  {dist}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12, marginTop: 6 }}>
+            {CATEGORY_CHIPS.map((cat) => (
+              <TouchableOpacity
+                key={cat}
+                style={[s.catChip, activeCategory === cat && s.catChipActive]}
+                onPress={() => setActiveCategory(cat)}
+              >
+                <Text style={[s.catChipText, activeCategory === cat && s.catChipTextActive]}>
+                  {cat}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Nút dùng trực tiếp */}
+        {query.trim().length >= 2 && (
+          <TouchableOpacity style={s.useTypedBtn} onPress={handleUseCurrentTypedAddress}>
+            <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
+            <Text style={s.useTypedText} numberOfLines={1}>
+              Dùng trực tiếp: <Text style={{ fontWeight: '800' }}>"{query.trim()}"</Text>
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {loading && <ActivityIndicator color={colors.primary} style={{ margin: 6 }} />}
         {!!error && <Text style={s.error}>{error}</Text>}
-        {results.map((f, i) => (
-          <Pressable key={i} style={s.result} onPress={() => choose(f)}>
-            <Text style={s.title}>{f.properties.name || f.properties.street || 'Địa điểm'}</Text>
-            <Text style={s.sub}>{[f.properties.street, f.properties.district, f.properties.city || f.properties.state].filter(Boolean).join(', ')}</Text>
-          </Pressable>
-        ))}
+
+        {/* Danh sách kết quả */}
+        <ScrollView style={{ flex: 1, paddingHorizontal: 12 }}>
+          {results.map((item) => (
+            <TouchableOpacity key={item.id} style={s.resultItem} onPress={() => chooseItem(item)}>
+              <View style={s.iconWrap}>
+                <Ionicons name="location-outline" size={18} color={colors.primary} />
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text style={s.resultTitle}>{item.name}</Text>
+                  <Text style={s.districtBadge}>{item.district}</Text>
+                </View>
+                <Text style={s.resultSubtitle}>{item.fullAddress}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
     </Modal>
   );
 }
 
 const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 16 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  cancel: { color: '#00B14F', fontWeight: '700' },
-  heading: { fontSize: 18, fontWeight: '800' },
-  search: { borderWidth: 1, borderColor: '#E4E7EB', borderRadius: 12, padding: 12 },
-  error: { color: '#E5484D', marginTop: 8 },
-  result: { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#E4E7EB' },
-  title: { fontWeight: '700' },
-  sub: { color: '#7B8794', marginTop: 2 },
+  container: { flex: 1, backgroundColor: '#fff', paddingVertical: 16 },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E4E7EB',
+  },
+  cancel: { color: colors.primary, fontWeight: '700', fontSize: 15 },
+  heading: { fontSize: 16, fontWeight: '800' },
+  subHeading: { fontSize: 11, color: colors.primary, fontWeight: '600' },
+
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 12,
+    marginVertical: 10,
+    paddingHorizontal: 12,
+    height: 46,
+    borderRadius: radius.pill,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#E4E7EB',
+    ...shadow,
+  },
+  searchInput: { flex: 1, marginLeft: 8, fontSize: 14, outlineStyle: 'none' as any },
+
+  filterBar: { marginBottom: 8 },
+  filterChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: radius.pill,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#E4E7EB',
+    marginRight: 6,
+  },
+  filterChipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  filterChipText: { fontSize: 12, color: colors.text, fontWeight: '600' },
+  filterChipTextActive: { color: '#fff', fontWeight: '800' },
+
+  catChip: {
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: radius.pill,
+    backgroundColor: '#f1f5f3',
+    marginRight: 6,
+  },
+  catChipActive: { backgroundColor: colors.primaryLight, borderWidth: 1, borderColor: colors.primary },
+  catChipText: { fontSize: 11, color: colors.muted, fontWeight: '600' },
+  catChipTextActive: { color: colors.primaryDark, fontWeight: '800' },
+
+  useTypedBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primaryLight,
+    marginHorizontal: 12,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: radius.md,
+  },
+  useTypedText: { marginLeft: 6, fontSize: 13, color: colors.primaryDark, flex: 1 },
+
+  error: { color: colors.danger, paddingHorizontal: 16, fontSize: 12, marginBottom: 8 },
+
+  resultItem: {
+    flexDirection: 'row',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E4E7EB',
+    alignItems: 'center',
+  },
+  iconWrap: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  resultTitle: { fontWeight: '700', fontSize: 14, color: colors.text },
+  districtBadge: {
+    fontSize: 10,
+    color: colors.primaryDark,
+    backgroundColor: colors.primaryLight,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: radius.pill,
+    fontWeight: '700',
+  },
+  resultSubtitle: { color: colors.muted, fontSize: 12, marginTop: 2 },
 });
