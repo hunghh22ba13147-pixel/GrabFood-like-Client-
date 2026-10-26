@@ -35,6 +35,8 @@ export type OrderStatus = 'placed' | 'preparing' | 'delivering' | 'completed';
 export type PaymentMethod = 'cash' | 'wallet';
 
 export interface Order {
+  /** Stable User.id. Optional only to preserve legacy orders; missing owners are never assigned implicitly. */
+  userId?: string;
   id: string; restaurant: Restaurant; items: CartItem[];
   subtotal: number; deliveryFee: number; discount: number; total: number;
   voucherCode?: string; paymentMethod: PaymentMethod; address: string;

@@ -91,10 +91,15 @@ export default function ProfileScreen() {
     const doDelete = async () => {
       const next = addresses.filter((item) => item.id !== id);
       const selectedWasRemoved = addresses.find((item) => item.id === id)?.address === user?.address;
-      await updateProfile({
-        addresses: next,
-        address: selectedWasRemoved ? (next[0]?.address ?? EMPTY_ADDRESS) : (user?.address ?? EMPTY_ADDRESS),
-      });
+      try {
+        await updateProfile({
+          addresses: next,
+          address: selectedWasRemoved ? (next[0]?.address ?? EMPTY_ADDRESS) : (user?.address ?? EMPTY_ADDRESS),
+        });
+      } catch {
+        if (Platform.OS === 'web') globalThis.alert('Chưa xóa được địa chỉ. Vui lòng thử lại.');
+        else Alert.alert('Chưa xóa được địa chỉ', 'Vui lòng thử lại.');
+      }
     };
 
     if (Platform.OS === 'web') {
@@ -109,8 +114,16 @@ export default function ProfileScreen() {
 
   const signOut = () => {
     const doSignOut = async () => {
-      await logout();
-      navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+      try {
+        await logout();
+        navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+      } catch {
+        const closed = !useAuthStore.getState().user;
+        if (closed) navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+        const message = closed ? 'Phiên đã đóng nhưng chưa lưu được trạng thái đăng xuất trên máy.' : 'Chưa đăng xuất được. Vui lòng thử lại.';
+        if (Platform.OS === 'web') globalThis.alert(message);
+        else Alert.alert('Đăng xuất', message);
+      }
     };
 
     if (Platform.OS === 'web') {

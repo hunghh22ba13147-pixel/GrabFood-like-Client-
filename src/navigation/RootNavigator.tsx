@@ -7,7 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList, TabParamList } from './types';
 import { colors } from '../theme';
 import { useCartStore } from '../store/cartStore';
-import { useOrderStore } from '../store/orderStore';
+import { useOrderStore, ordersForUser } from '../store/orderStore';
+import { useAuthStore } from '../store/authStore';
 import SplashScreen from '../screens/auth/SplashScreen';
 import OnboardingScreen from '../screens/auth/OnboardingScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -32,7 +33,8 @@ function Tabs() {
     Profile: 'person',
   };
 
-  const activeOrdersCount = useOrderStore((s) => s.orders.filter((o) => o.status !== 'completed').length);
+  const userId = useAuthStore((s) => s.user?.id);
+  const activeOrdersCount = useOrderStore((s) => ordersForUser(s.orders, userId).filter((o) => o.status !== 'completed').length);
   const cartItemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
   return (

@@ -55,7 +55,7 @@ export default function HomeScreen() {
       await updateProfile({ address: place.address });
       showToast('Đã đổi địa chỉ giao hàng!');
     } catch {
-      // ignore
+      showToast('Chưa lưu được địa chỉ giao hàng. Vui lòng thử lại.');
     }
   };
 

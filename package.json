@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --test-concurrency=1 src/screens/cart/__tests__/*.test.cjs src/store/__tests__/*.test.cjs src/screens/orders/__tests__/*.test.cjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",

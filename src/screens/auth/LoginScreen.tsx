@@ -19,6 +19,7 @@ export default function LoginScreen() {
   const navigation = useNavigation<any>();
   const login = useAuthStore((state) => state.login);
   const resendVerification = useAuthStore((state) => state.resendVerification);
+  const hydrationError = useAuthStore((state) => state.hydrationError);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -80,6 +81,7 @@ export default function LoginScreen() {
           <Text style={styles.eyebrow}>CHÀO MỪNG TRỞ LẠI</Text>
           <Text style={styles.title}>Đăng nhập</Text>
           <Text style={styles.subtitle}>Đăng nhập để tiếp tục khám phá món ngon.</Text>
+          {hydrationError && <Text accessibilityRole="alert" style={{ color: colors.danger }}>{getAuthErrorMessage(new Error(hydrationError))}</Text>}
 
           <Text style={styles.label}>Email</Text>
           <TextInput

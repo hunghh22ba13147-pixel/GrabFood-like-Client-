@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useOrderStore, STATUS_FLOW, STATUS_LABEL, AUTO_ADVANCE_SECONDS } from '../../store/orderStore';
+import { useOrderStore, ordersForUser, STATUS_FLOW, STATUS_LABEL, AUTO_ADVANCE_SECONDS } from '../../store/orderStore';
+import { useAuthStore } from '../../store/authStore';
 import { colors, radius, shadow, spacing, formatVND } from '../../theme';
 
 const getTotal = (o: any) =>
@@ -40,15 +41,19 @@ const STATUS_DETAILS: Record<string, { title: string; subtitle: string; tip: str
 export default function OrderTrackingScreen({ route }: any) {
   const orders = useOrderStore((s) => s.orders);
   const advance = useOrderStore((s) => s.advance);
+  const userId = useAuthStore((s) => s.user?.id);
 
-  const orderId = route?.params?.orderId ?? orders[0]?.id;
-  const order = orders.find((o) => o.id === orderId);
+  const ownedOrders = ordersForUser(orders, userId);
+  const orderId = route?.params?.orderId ?? ownedOrders[0]?.id;
+  const order = ownedOrders.find((o) => o.id === orderId);
 
   useEffect(() => {
-    if (!order || order.status === 'completed' || AUTO_ADVANCE_SECONDS <= 0) return;
-    const t = setInterval(() => advance(order.id), AUTO_ADVANCE_SECONDS * 1000);
+    if (!userId || !order || order.status === 'completed' || AUTO_ADVANCE_SECONDS <= 0) return;
+    const t = setInterval(() => {
+      if (useAuthStore.getState().user?.id === userId) advance(order.id, userId);
+    }, AUTO_ADVANCE_SECONDS * 1000);
     return () => clearInterval(t);
-  }, [order?.id, order?.status, advance]);
+  }, [order?.id, order?.status, userId, advance]);
 
   if (!order) {
     return (
@@ -181,7 +186,7 @@ export default function OrderTrackingScreen({ route }: any) {
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Phương thức thanh toán:</Text>
           <Text style={styles.infoValue}>
-            {order.paymentMethod === 'cash' ? '💵 Tiền mặt khi nhận hàng' : '💳 Ví điện tử GrabPay'}
+            {order.paymentMethod === 'cash' ? '💵 Tiền mặt khi nhận hàng' : '💳 Ví điện tử GrabPay (Mô phỏng, không thu tiền thật)'}
           </Text>
         </View>
         <View style={styles.infoRow}>
@@ -204,7 +209,7 @@ export default function OrderTrackingScreen({ route }: any) {
       {/* Nút bấm chuyển nhanh trạng thái (Dành cho thuyết trình trực tiếp demo) */}
       <TouchableOpacity
         style={[styles.button, isDone && styles.buttonDisabled]}
-        onPress={() => advance(order.id)}
+        onPress={() => { if (userId && useAuthStore.getState().user?.id === userId) advance(order.id, userId); }}
         disabled={isDone}
         activeOpacity={0.8}
       >

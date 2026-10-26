@@ -1,6 +1,13 @@
 export function getAuthErrorMessage(error: unknown): string {
   const value = error as { code?: string; message?: string } | null;
   const code = value?.code ?? value?.message ?? '';
+  if (code.includes('auth/storage-invalid')) return 'Dữ liệu tài khoản trên máy chưa đọc được. Dữ liệu cũ được giữ nguyên; hãy báo nhóm kiểm tra.';
+  if (code.includes('auth/storage-write-failed')) return 'Chưa lưu được dữ liệu tài khoản trên máy. Vui lòng thử lại.';
+  if (code.includes('auth/storage-read-failed')) return 'Chưa đọc được dữ liệu tài khoản trên máy. Vui lòng thử lại.';
+  if (code.includes('auth/already-signed-in')) return 'Hãy đăng xuất trước khi đăng ký hoặc xác minh tài khoản khác.';
+  if (code.includes('auth/session-changed')) return 'Phiên đăng nhập đã thay đổi. Vui lòng thử lại trong tài khoản hiện tại.';
+  if (code.includes('auth/not-signed-in')) return 'Vui lòng đăng nhập để tiếp tục.';
+  if (code.includes('auth/checkout-in-progress')) return 'Đang tạo đơn. Vui lòng chờ trước khi đổi tài khoản.';
   if (code.includes('firebase/not-configured')) return 'Chưa có cấu hình Firebase của nhóm. Hãy thêm cấu hình vào file .env.local.';
   if (code.includes('auth/email-already-in-use')) return 'Email này đã có tài khoản. Hãy đăng nhập.';
   if (code.includes('auth/invalid-email')) return 'Email chưa đúng định dạng.';

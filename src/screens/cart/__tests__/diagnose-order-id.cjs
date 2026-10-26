@@ -5,7 +5,7 @@ const { createCartItem, calcPricing } = require('../../../store/cartStore.ts');
 const { useOrderStore } = require('../../../store/orderStore.ts');
 const f = fixtures();
 const items = [createCartItem(f.RA, f.D1, 1, [])];
-const payload = { restaurant: f.RA, items, pricing: calcPricing(items, f.RA, null), paymentMethod: 'cash', address: 'Địa chỉ fixture diagnostic' };
+const payload = { userId: 'diagnostic-user', restaurant: f.RA, items, pricing: calcPricing(items, f.RA, null), paymentMethod: 'cash', address: 'Địa chỉ fixture diagnostic' };
 const previousNow = Date.now;
 try {
   Date.now = () => Date.parse('2026-10-25T10:00:00+07:00');

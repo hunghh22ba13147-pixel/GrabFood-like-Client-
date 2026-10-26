@@ -25,27 +25,30 @@ export default function CheckoutScreen() {
 
   const [payment, setPayment] = useState<PaymentMethod | null>('cash');
   const [showAddressPicker, setShowAddressPicker] = useState(false);
+  const [addressError, setAddressError] = useState<string | null>(null);
 
   const controllerRef = useRef<ReturnType<typeof createCheckoutController> | null>(null);
   if (!controllerRef.current) controllerRef.current = createCheckoutController({
     placeOrder: (payload) => useOrderStore.getState().placeOrder(payload),
     getAddress: () => useAuthStore.getState().user?.address ?? '',
+    getUserId: () => useAuthStore.getState().user?.id ?? null,
     openTracking: (orderId) => nav.replace('OrderTracking', { orderId }),
   });
   const controller = controllerRef.current;
   const state = useSyncExternalStore(controller.subscribe, controller.getState, controller.getState);
   const { pricing, error: pricingError, voucherError } = readCartPricing(cart);
-  const review = pricing ? checkoutReview(cart, address) : null;
+  const review = pricing ? checkoutReview(cart, address, user?.id ?? null) : null;
   const busy = state.phase === 'submitting' || cart.checkoutLocked;
   const hasValidAddress = isValidAddress(address);
 
   const handleSelectAddress = async (place: PickedAddress) => {
     setShowAddressPicker(false);
+    setAddressError(null);
     try {
       await updateProfile({ address: place.address });
       showToast('Đã đổi địa chỉ giao hàng!');
     } catch {
-      // ignore
+      setAddressError('Chưa lưu được địa chỉ giao hàng. Vui lòng thử lại.');
     }
   };
 
@@ -65,6 +68,7 @@ export default function CheckoutScreen() {
   return <SafeAreaView edges={['bottom']} style={styles.screen}>
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <ErrorMessage message={addressError} />
         {/* Mục Địa chỉ giao hàng - Bấm vào là đổi được ngay */}
         <TouchableOpacity
           style={[styles.card, { borderColor: hasValidAddress ? colors.primary : colors.danger, borderWidth: 1 }]}
@@ -115,6 +119,11 @@ export default function CheckoutScreen() {
           <Text style={styles.sectionTitle}>Phương thức thanh toán</Text>
           <Pressable
             style={[s.payOpt, payment === 'cash' && s.payOptActive]}
+            accessibilityRole="radio"
+            accessibilityLabel="Tiền mặt khi nhận món"
+            accessibilityState={{ checked: payment === 'cash', disabled: busy }}
+            aria-checked={payment === 'cash'}
+            disabled={busy}
             onPress={() => setPayment('cash')}
           >
             <Ionicons name="cash-outline" size={20} color={payment === 'cash' ? colors.primary : colors.muted} />
@@ -124,12 +133,18 @@ export default function CheckoutScreen() {
 
           <Pressable
             style={[s.payOpt, payment === 'wallet' && s.payOptActive, { marginTop: 8 }]}
+            accessibilityRole="radio"
+            accessibilityLabel="Ví điện tử mô phỏng"
+            accessibilityState={{ checked: payment === 'wallet', disabled: busy }}
+            aria-checked={payment === 'wallet'}
+            disabled={busy}
             onPress={() => setPayment('wallet')}
           >
             <Ionicons name="wallet-outline" size={20} color={payment === 'wallet' ? colors.primary : colors.muted} />
             <Text style={[s.payText, payment === 'wallet' && s.payTextActive]}>Ví điện tử GrabPay / Thẻ (Mô phỏng)</Text>
             {payment === 'wallet' && <Ionicons name="checkmark-circle" size={18} color={colors.primary} />}
           </Pressable>
+          <Text style={styles.muted}>Ví điện tử là mô phỏng, không thu tiền thật.</Text>
         </View>
 
         {/* Chi tiết giá & phí ship */}

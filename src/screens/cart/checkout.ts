@@ -18,9 +18,9 @@ export function isValidAddress(address?: string | null): boolean {
 }
 
 /** The fingerprint also covers address/options/note, not only the total. */
-export function checkoutReview(cart: CartSnapshot, address: string): CheckoutReview {
+export function checkoutReview(cart: CartSnapshot, address: string, userId: string | null): CheckoutReview {
   const pricing = calcPricing(cart.items, cart.restaurant, cart.voucher);
-  return { pricing, fingerprint: JSON.stringify({ restaurant: cart.restaurant, items: cart.items, voucher: cart.voucher, address, pricing }) };
+  return { pricing, fingerprint: JSON.stringify({ userId, restaurant: cart.restaurant, items: cart.items, voucher: cart.voucher, address, pricing }) };
 }
 
 export interface CheckoutState {
@@ -33,6 +33,7 @@ export interface CheckoutState {
 export function createCheckoutController(dependencies: {
   placeOrder: PlaceOrder;
   getAddress: () => string;
+  getUserId: () => string | null;
   openTracking: (orderId: string) => void;
 }) {
   let state: CheckoutState = { phase: 'idle', orderId: null, error: null };
@@ -57,11 +58,13 @@ export function createCheckoutController(dependencies: {
       const cart = useCartStore.getState();
       if (!cart.items.length || !cart.restaurant) throw new CartValidationError('Giỏ hàng trống. Vui lòng thêm món.');
       if (paymentMethod !== 'cash' && paymentMethod !== 'wallet') throw new CartValidationError('Vui lòng chọn phương thức thanh toán.');
+      const userId = dependencies.getUserId();
+      if (!userId) throw new CartValidationError('Vui lòng đăng nhập trước khi đặt đơn.');
       const address = dependencies.getAddress();
       if (!isValidAddress(address)) {
         throw new CartValidationError('Chưa có địa chỉ giao hàng hợp lệ. Vui lòng chọn địa chỉ giao đến.');
       }
-      const latest = checkoutReview(cart, address);
+      const latest = checkoutReview(cart, address, userId);
       if (!review || latest.fingerprint !== review.fingerprint) {
         throw new CartValidationError('Giỏ hàng hoặc địa chỉ đã thay đổi. Vui lòng kiểm tra lại trước khi đặt đơn.');
       }
@@ -76,6 +79,7 @@ export function createCheckoutController(dependencies: {
         voucherCode: cart.voucher?.code,
         paymentMethod,
         address,
+        userId,
       });
       // A returned Order is the success signal of the verified synchronous API.
       useCartStore.setState({ items: [], restaurant: null, voucher: null, checkoutLocked: false });

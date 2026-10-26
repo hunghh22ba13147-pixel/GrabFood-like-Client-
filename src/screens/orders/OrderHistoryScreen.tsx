@@ -1,69 +1,63 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { useOrderStore, STATUS_LABEL } from '../../store/orderStore';
+import { useOrderStore, ordersForUser, STATUS_LABEL } from '../../store/orderStore';
 import { useAuthStore } from '../../store/authStore';
-import { useCartStore } from '../../store/cartStore';
+import { cartErrorMessage } from '../../store/cartStore';
 import { Order } from '../../models/types';
+import { reorderOrder } from './reorder';
 import { colors, radius, shadow, spacing, formatVND } from '../../theme';
 
-const getTotal = (o: any) =>
-  o.total ?? o.finalTotal ?? (o.subtotal + o.deliveryFee - (o.discount || 0));
+const getTotal = (order: Order) => order.total;
+
+function confirmReplace(restaurant: Order['restaurant']): Promise<boolean> {
+  const message = `Bạn muốn thay toàn bộ giỏ hiện tại bằng các món đặt lại từ "${restaurant.name}"? Giá được tính theo thực đơn hiện tại; voucher cũ không được khôi phục.`;
+  if (Platform.OS === 'web') return Promise.resolve(globalThis.confirm(message));
+  return new Promise((resolve) => Alert.alert('Thay giỏ hàng?', message, [
+    { text: 'Hủy', style: 'cancel', onPress: () => resolve(false) },
+    { text: 'Đồng ý', onPress: () => resolve(true) },
+  ], { cancelable: true, onDismiss: () => resolve(false) }));
+}
 
 export default function OrderHistoryScreen() {
   const nav = useNavigation<any>();
   const orders = useOrderStore((s) => s.orders);
   const currentUser = useAuthStore((s) => s.user);
   const [tab, setTab] = useState<'delivering' | 'completed'>('delivering');
+  const [reordering, setReordering] = useState<string | null>(null);
+  const [reorderError, setReorderError] = useState<string | null>(null);
+  const reorderBusy = useRef(false);
 
   // Lọc đơn theo tài khoản hiện tại (tránh lẫn đơn giữa các tài khoản)
-  const userOrders = orders.filter((o: any) => {
-    if (!o.userId) return true;
-    return o.userId === (currentUser?.email || 'guest');
-  });
+  const userOrders = ordersForUser(orders, currentUser?.id);
 
   const delivering = userOrders.filter((o) => o.status !== 'completed');
   const completed = userOrders.filter((o) => o.status === 'completed');
   const data = tab === 'delivering' ? delivering : completed;
 
   // Xử lý chức năng "Đặt lại đơn" (Re-order)
-  const handleReorder = (order: Order) => {
-    if (!order.restaurant || !order.items || order.items.length === 0) return;
-    const currentCartRestaurant = useCartStore.getState().restaurant;
-
-    const doReorder = () => {
-      useCartStore.getState().clearCart();
-      order.items.forEach((ci: any) => {
-        useCartStore.getState().addToCart(
-          order.restaurant,
-          ci.dish,
-          ci.quantity,
-          ci.selectedOptions || [],
-          ci.note
-        );
-      });
-      nav.navigate('Cart');
-    };
-
-    if (currentCartRestaurant && currentCartRestaurant.id !== order.restaurant.id) {
-      const msg = `Giỏ hàng đang có món của "${currentCartRestaurant.name}". Bạn có muốn xóa giỏ cũ để đặt lại đơn quán "${order.restaurant.name}" không?`;
-      if (Platform.OS === 'web') {
-        if (globalThis.confirm(msg)) doReorder();
-      } else {
-        Alert.alert('Đổi quán ăn', msg, [
-          { text: 'Hủy', style: 'cancel' },
-          { text: 'Đồng ý', onPress: doReorder },
-        ]);
+  const handleReorder = async (order: Order) => {
+    if (reorderBusy.current) return;
+    reorderBusy.current = true;
+    setReordering(order.id);
+    setReorderError(null);
+    try {
+      if (await reorderOrder(order, { getUserId: () => useAuthStore.getState().user?.id ?? null, confirmReplace })) {
+        nav.navigate('Cart');
       }
-    } else {
-      doReorder();
+    } catch (error) {
+      setReorderError(cartErrorMessage(error));
+    } finally {
+      reorderBusy.current = false;
+      setReordering(null);
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Đơn hàng của tôi</Text>
+      {reorderError && <Text accessibilityRole="alert" style={{ color: colors.danger, marginBottom: spacing.md }}>{reorderError}</Text>}
 
       {/* 2 tab lọc */}
       <View style={styles.tabRow}>
@@ -129,7 +123,7 @@ export default function OrderHistoryScreen() {
 
             <View style={styles.bodyCard}>
               <Text style={styles.itemSummary} numberOfLines={1}>
-                {item.items?.map((it: any) => `${it.quantity}x ${it.dish?.name}`).join(', ')}
+                {item.items?.map((it) => `${it.quantity}x ${it.dish?.name}`).join(', ')}
               </Text>
               <View style={styles.footerCard}>
                 <Text style={styles.totalLabel}>Tổng tiền:</Text>
@@ -141,14 +135,15 @@ export default function OrderHistoryScreen() {
               {item.status === 'completed' && (
                 <TouchableOpacity
                   style={styles.reorderBtn}
+                  disabled={reordering !== null}
                   onPress={(e) => {
                     e.stopPropagation();
-                    handleReorder(item);
+                    return handleReorder(item);
                   }}
                   activeOpacity={0.8}
                 >
                   <Ionicons name="repeat" size={15} color={colors.primary} />
-                  <Text style={styles.reorderBtnText}>Đặt lại đơn</Text>
+                  <Text style={styles.reorderBtnText}>{reordering === item.id ? 'Đang chuẩn bị…' : 'Đặt lại đơn'}</Text>
                 </TouchableOpacity>
               )}
               <View style={styles.viewDetailsRow}>

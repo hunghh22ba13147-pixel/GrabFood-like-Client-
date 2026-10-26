@@ -135,6 +135,7 @@ interface CartState {
   addToCart: (restaurant: Restaurant, dish: Dish, quantity: number, selected: CartItem['selectedOptions'], note?: string) => void;
   /** Only call after explicit confirmation. Validates first, then replaces atomically. */
   replaceCart: (restaurant: Restaurant, dish: Dish, quantity: number, selected: CartItem['selectedOptions'], note?: string) => void;
+  replaceItems: (restaurant: Restaurant, items: CartItem[]) => void;
   updateQuantity: (key: string, quantity: number) => void; // quantity <= 0 => xóa
   removeItem: (key: string) => void;
   applyVoucher: (v: Voucher | null) => void;
@@ -169,6 +170,13 @@ export const useCartStore = create<CartState>((set, get) => ({
     requireValue(!get().checkoutLocked, 'Đang tạo đơn. Vui lòng chờ.');
     set({ restaurant: { ...restaurant }, items: [item], voucher: null });
   },
+  replaceItems: (restaurant, input) => {
+    requireValue(input.length > 0, 'Đơn cũ không có món để đặt lại.');
+    const items = input.map((item) => createCartItem(restaurant, item.dish, item.quantity, item.selectedOptions, item.note));
+    calcPricing(items, restaurant, null);
+    requireValue(!get().checkoutLocked, 'Đang tạo đơn. Vui lòng chờ.');
+    set({ restaurant: { ...restaurant }, items, voucher: null });
+  },
   updateQuantity: (key, quantity) => set((state) => {
     requireValue(!state.checkoutLocked, 'Đang tạo đơn. Vui lòng chờ.');
     requireValue(Number.isSafeInteger(quantity), 'Số lượng phải là số nguyên hữu hạn.');
@@ -190,7 +198,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     set({ voucher: voucher ? { ...voucher } : null });
   },
   clearCart: () => {
-    set({ items: [], restaurant: null, voucher: null, checkoutLocked: false });
+    get().clear();
   },
   clear: () => {
     requireValue(!get().checkoutLocked, 'Đang tạo đơn. Vui lòng chờ.');

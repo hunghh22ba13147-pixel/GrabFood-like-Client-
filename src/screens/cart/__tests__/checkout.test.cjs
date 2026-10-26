@@ -20,6 +20,7 @@ function harness(overrides = {}) {
   const address = 'Địa chỉ fixture checkout';
   const controller = createCheckoutController({
     getAddress: () => address,
+    getUserId: () => 'fixture-user',
     placeOrder: (payload) => {
       calls.push(payload);
       return { id: 'TEST-ORDER', ...payload, ...payload.pricing, status: 'placed', createdAt: 1792897200000 };
@@ -27,7 +28,7 @@ function harness(overrides = {}) {
     openTracking: (id) => routes.push(id),
     ...overrides,
   });
-  return { controller, calls, routes, address, review: () => checkoutReview(state(), address) };
+  return { controller, calls, routes, address, review: () => checkoutReview(state(), address, 'fixture-user') };
 }
 test('O01/U controller: empty submit cannot create or navigate', () => {
   const h = harness();
@@ -44,6 +45,7 @@ for (const payment of ['cash', 'wallet']) {
     const payload = h.calls[0];
     assert.equal(payload.paymentMethod, payment);
     assert.equal(payload.address, h.address);
+    assert.equal(payload.userId, 'fixture-user');
     assert.equal(payload.voucherCode, 'GRAB50');
     assert.deepEqual(payload.pricing, { subtotal: 104000, deliveryFee: 15000, discount: 25000, total: 94000 });
     assert.deepEqual(payload.items, original);
@@ -66,6 +68,14 @@ test('Address contract: no fabricated fallback address or order', () => {
   assert.equal(h.calls.length, 0);
   assert.match(h.controller.getState().error, /địa chỉ/);
 });
+
+for (const address of [null, undefined, '', '   ', 'Chưa thêm địa chỉ giao hàng', ' CHƯA THÊM ĐỊA CHỈ GIAO HÀNG ', 'chua them dia chi giao hang']) {
+  test('R02: invalid address ' + JSON.stringify(address) + ' preserves cart and never calls API', () => {
+    seed(); const before = state().items, h = harness({ getAddress: () => address });
+    assert.equal(h.controller.submit(h.review(), 'cash'), null); assert.equal(h.calls.length, 0);
+    assert.equal(state().items, before); assert.match(h.controller.getState().error, /địa chỉ/);
+  });
+}
 test('O06/U controller: retain cart during API, then clear and use returned ID', () => {
   seed(); let h;
   h = harness({ placeOrder: (payload) => {
@@ -153,6 +163,7 @@ test('O12/U controller: every public cart mutation is blocked during synchronous
       () => state().addToCart(f.RA, f.D2, 1, []), () => state().updateQuantity(key, 3),
       () => state().removeItem(key), () => state().clear(), () => state().applyVoucher(null),
       () => state().replaceCart(f.RB, f.D3, 1, []),
+      () => state().clearCart(), () => state().replaceItems(f.RA, state().items),
     ]) assert.throws(action, CartValidationError);
     assert.equal(state(), lockedState);
     return { id: 'LOCKED', restaurant: payload.restaurant, items: payload.items, ...payload.pricing,
@@ -173,10 +184,24 @@ test('O13/U controller: stale cart review blocks submit until new total is revie
 test('O13/U controller: stale address blocks submit even if total is unchanged', () => {
   seed(); let address = 'A';
   const h = harness({ getAddress: () => address });
-  const reviewed = checkoutReview(state(), address);
+  const reviewed = checkoutReview(state(), address, 'fixture-user');
   address = 'B';
   assert.equal(h.controller.submit(reviewed, 'cash'), null);
   assert.equal(h.calls.length, 0);
+});
+
+test('R01: missing account cannot place an Order, even with an otherwise valid address and cart', () => {
+  seed(); const h = harness({ getUserId: () => null }), before = state().items;
+  assert.equal(h.controller.submit(h.review(), 'cash'), null);
+  assert.equal(h.calls.length, 0); assert.equal(state().items, before);
+  assert.match(h.controller.getState().error, /đăng nhập/);
+});
+
+test('R01: account change invalidates an old review even when address and pricing are unchanged', () => {
+  seed(); let id = 'fixture-user'; const h = harness({ getUserId: () => id }), reviewed = h.review();
+  id = 'other-user';
+  assert.equal(h.controller.submit(reviewed, 'cash'), null); assert.equal(h.calls.length, 0);
+  assert.match(h.controller.getState().error, /thay đổi/);
 });
 test('V10/O13/U controller: selected voucher below minimum cannot reach order API', () => {
   seed(); state().removeItem(state().items[1].key); state().updateQuantity(state().items[0].key, 1);

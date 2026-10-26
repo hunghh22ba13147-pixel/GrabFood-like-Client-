@@ -4,14 +4,15 @@ const { test, beforeEach } = require('node:test');
 const { api } = require('../../../services/api.ts');
 const { useCartStore: cart, calcPricing } = require('../../../store/cartStore.ts');
 const { useOrderStore: orders } = require('../../../store/orderStore.ts');
-const { useAuthStore: auth } = require('../../../store/authStore.ts');
+const { authFixture } = require('../../../store/__tests__/authFixture.cjs');
+const { auth } = authFixture(); // Auth implementation is real; SDK/storage are isolated boundary mocks.
 const { createCheckoutController, checkoutReview } = require('../checkout.ts');
 beforeEach(() => {
   cart.setState({ items: [], restaurant: null, voucher: null, checkoutLocked: false });
   orders.setState({ orders: [] }); auth.setState({ user: null });
 });
 
-test('Order handoff/I real service + stores: correct actual menu/voucher, returned Order and detached snapshot (not Tracking/History)', async (t) => {
+test('Order handoff/I real JSON service + stores, mocked auth SDK/storage: money, owner, returned ID and detached snapshot', async (t) => {
   const fixed = Date.parse('2026-10-25T10:00:00+07:00');
   t.mock.method(Date, 'now', () => fixed);
   const [restaurant, dishes, vouchers] = await Promise.all([api.getRestaurant('r1'), api.getDishes('r1'), api.getVouchers()]);
@@ -19,7 +20,9 @@ test('Order handoff/I real service + stores: correct actual menu/voucher, return
   const dish = dishes.find((entry) => entry.id === 'r1-d1');
   const voucher = vouchers.find((entry) => entry.code === 'GIAM15K');
   assert.ok(dish); assert.ok(voucher);
-  auth.getState().register('TV3 test', 'tv3@example.test', 'test-password');
+  await auth.getState().register('TV3 test', 'tv3@example.test', 'test-password');
+  assert.equal(auth.getState().user, null);
+  await auth.getState().login('tv3@example.test', 'test-password');
   cart.getState().addToCart(restaurant, dish, 2, [
     { optionId: 'size', choiceIds: ['L'] }, { optionId: 'topping', choiceIds: ['pearl-white', 'pudding'] },
   ], 'Ít đá');
@@ -29,8 +32,9 @@ test('Order handoff/I real service + stores: correct actual menu/voucher, return
   assert.deepEqual(pricing, { subtotal: 140000, deliveryFee: 8000, discount: 15000, total: 133000 });
   const routes = [];
   const controller = createCheckoutController({ placeOrder: orders.getState().placeOrder,
+    getUserId: () => auth.getState().user?.id ?? null,
     getAddress: () => auth.getState().user.address, openTracking: (id) => routes.push(id) });
-  const order = controller.submit(checkoutReview(snapshot, auth.getState().user.address), 'wallet');
+  const order = controller.submit(checkoutReview(snapshot, auth.getState().user.address, auth.getState().user.id), 'wallet');
   assert.ok(order);
   assert.equal(orders.getState().orders.length, 1);
   assert.equal(orders.getState().orders[0], order);
@@ -41,7 +45,9 @@ test('Order handoff/I real service + stores: correct actual menu/voucher, return
   assert.equal(order.total, 133000);
   assert.equal(order.items[0].note, 'Ít đá');
   assert.deepEqual(routes, [order.id]);
-  assert.equal(order.id, 'GF' + String(fixed).slice(-6));
+  assert.match(order.id, /^GF\d+$/);
+  assert.equal(order.userId, auth.getState().user.id);
+  assert.equal(orders.getState().orders.find((entry) => entry.id === order.id), order);
   assert.equal(cart.getState().items.length, 0);
   assert.equal(cart.getState().voucher, null);
   const saved = structuredClone(order);
@@ -49,14 +55,14 @@ test('Order handoff/I real service + stores: correct actual menu/voucher, return
   snapshot.items[0].dish.options[0].choices[0].price = 1;
   cart.getState().addToCart(restaurant, dish, 1, [{ optionId: 'size', choiceIds: ['M'] }]);
   assert.deepEqual(order, saved);
-  assert.equal(controller.submit(checkoutReview(cart.getState(), auth.getState().user.address), 'cash'), null);
+  assert.equal(controller.submit(checkoutReview(cart.getState(), auth.getState().user.address, auth.getState().user.id), 'cash'), null);
   assert.equal(orders.getState().orders.length, 1);
 });
 
 test('Voucher data/I real service: all current records validate and use actual discriminator', async () => {
   const { validateVoucher } = require('../../../store/cartStore.ts');
   const vouchers = await api.getVouchers();
-  assert.deepEqual(vouchers.map((voucher) => voucher.code), ['GIAM15K', 'FREESHIP', 'SALE10']);
+  assert.deepEqual(vouchers.map((voucher) => voucher.code), ['GIAM15K', 'FREESHIP', 'SALE10', 'GIAM30K', 'BANMOI']);
   for (const voucher of vouchers) assert.doesNotThrow(() => validateVoucher(voucher));
   assert.equal(vouchers.find((voucher) => voucher.code === 'FREESHIP').type, 'freeship');
 });

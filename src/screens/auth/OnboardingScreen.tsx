@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors, radius, spacing } from '../../theme';
@@ -7,13 +7,19 @@ import { useAuthStore } from '../../store/authStore';
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
   const finishOnboarding = useAuthStore((state) => state.finishOnboarding);
-  const begin = async () => { await finishOnboarding(); navigation.replace('Login'); };
+  const [error, setError] = useState<string | null>(null);
+  const begin = async () => {
+    setError(null);
+    try { await finishOnboarding(); navigation.replace('Login'); }
+    catch { setError('Chưa lưu được trạng thái bắt đầu. Vui lòng thử lại.'); }
+  };
   return <SafeAreaView style={styles.safe}><View style={styles.content}>
     <View style={styles.illustration}><Text style={styles.food}>🍜</Text><Text style={[styles.food, styles.smallFood]}>🥡</Text><Text style={styles.sparkle}>✦</Text></View>
     <Text style={styles.kicker}>CHÀO MỪNG BẠN</Text><Text style={styles.title}>Món ngon,{ '\n' }giao thật nhanh.</Text>
     <Text style={styles.copy}>Khám phá quán ngon quanh bạn, chọn món yêu thích và để chúng mình giao đến tận cửa.</Text>
     <View style={styles.dots}><View style={styles.activeDot}/><View style={styles.dot}/><View style={styles.dot}/></View>
     <Pressable onPress={begin} style={styles.button}><Text style={styles.buttonText}>Bắt đầu đặt món  →</Text></Pressable>
+    {error && <Text accessibilityRole="alert" style={{ color: colors.danger }}>{error}</Text>}
     <Text style={styles.note}>Đồ ăn ngon chỉ cách bạn vài thao tác</Text>
   </View></SafeAreaView>;
 }

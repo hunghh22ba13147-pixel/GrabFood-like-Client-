@@ -6,7 +6,8 @@ const { renderToStaticMarkup } = require('react-dom/server');
 const native = require('react-native-web');
 const Module = require('node:module');
 const cart = require('../../../store/cartStore.ts');
-const auth = require('../../../store/authStore.ts');
+const { authFixture } = require('../../../store/__tests__/authFixture.cjs');
+const auth = { useAuthStore: authFixture().auth };
 const { fixtures } = require('./fixtures.ts');
 
 // SSR component tests: real React + RN Web, mocked navigation/safe-area/store hooks.
@@ -16,6 +17,8 @@ const navigation = { navigate() {}, replace() {} };
 const snapshotHook = (store) => (selector) => selector ? selector(store.getState()) : store.getState();
 Module._load = function(request, parent, isMain) {
   if (request === 'react-native') return native;
+  if (request === '../../components/AddressPicker') return { __esModule: true, default: () => null };
+  if (request === '@expo/vector-icons') return { Ionicons: () => null };
   if (request === '@react-navigation/native') return { useNavigation: () => navigation };
   if (request === 'react-native-safe-area-context') return {
     SafeAreaView: ({ edges, ...props }) => React.createElement(native.View, props),
@@ -87,20 +90,23 @@ test('V05/V06/V07/U lookup: unknown, whitespace and normalized code', () => {
   assert.equal(findVoucher([f.V25], '  grab50  '), f.V25);
   assert.equal(cart.useCartStore.getState(), before);
 });
-test('O02/O03/O04/C SSR: real payment enums rendered, wallet labelled simulation, no payment defaults', () => {
-  seed(); auth.useAuthStore.getState().register('TV3 test', 'tv3@example.test', 'test-password');
+test('O02/O03/O04/C SSR: payment enums, simulation notice and agreed cash default', async () => {
+  await auth.useAuthStore.getState().login('tv3@example.test', 'test-password'); seed();
   const html = render(CheckoutScreen), body = text(html);
   assert.match(body, /Tiền mặt/);
-  assert.match(body, /Ví điện tử \(giả lập\)/);
+  assert.match(body, /Ví điện tử.*Mô phỏng/);
   assert.match(body, /không thu tiền thật/);
-  assert.equal((html.match(/aria-checked="false"/g) || []).length, 2);
-  assert.match(html, /aria-disabled="true"/);
+  // User confirmed cash preselection in the local-fix request; still test both enum choices and a usable CTA.
+  assert.equal((html.match(/aria-checked="false"/g) || []).length, 1);
+  assert.equal((html.match(/aria-checked="true"/g) || []).length, 1);
+  const orderButton = html.match(/<button\b[^>]*aria-label="Đặt đơn[^"]*"[^>]*>/)?.[0];
+  assert.ok(orderButton); assert.doesNotMatch(orderButton, /\sdisabled(?:=|\s|>)/);
 });
 test('Address/C SSR: missing auth address is explicit, no fallback silently permits checkout', () => {
   seed();
   const html = render(CheckoutScreen);
   assert.match(text(html), /Chưa có địa chỉ giao hàng/);
-  assert.match(text(html), /Cập nhật địa chỉ/);
+  assert.match(text(html), /Chọn địa chỉ/);
   assert.match(html, /aria-disabled="true"/);
 });
 test('Q04/C SSR: voucher initial loading is visible and apply action disabled', () => {
