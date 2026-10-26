@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useOrderStore, STATUS_LABEL } from '../../store/orderStore';
+import { useAuthStore } from '../../store/authStore';
+import { useCartStore } from '../../store/cartStore';
+import { Order } from '../../models/types';
 import { colors, radius, shadow, spacing, formatVND } from '../../theme';
 
 const getTotal = (o: any) =>
@@ -11,11 +14,52 @@ const getTotal = (o: any) =>
 export default function OrderHistoryScreen() {
   const nav = useNavigation<any>();
   const orders = useOrderStore((s) => s.orders);
+  const currentUser = useAuthStore((s) => s.user);
   const [tab, setTab] = useState<'delivering' | 'completed'>('delivering');
 
-  const delivering = orders.filter((o) => o.status !== 'completed');
-  const completed = orders.filter((o) => o.status === 'completed');
+  // Lọc đơn theo tài khoản hiện tại (tránh lẫn đơn giữa các tài khoản)
+  const userOrders = orders.filter((o: any) => {
+    if (!o.userId) return true;
+    return o.userId === (currentUser?.email || 'guest');
+  });
+
+  const delivering = userOrders.filter((o) => o.status !== 'completed');
+  const completed = userOrders.filter((o) => o.status === 'completed');
   const data = tab === 'delivering' ? delivering : completed;
+
+  // Xử lý chức năng "Đặt lại đơn" (Re-order)
+  const handleReorder = (order: Order) => {
+    if (!order.restaurant || !order.items || order.items.length === 0) return;
+    const currentCartRestaurant = useCartStore.getState().restaurant;
+
+    const doReorder = () => {
+      useCartStore.getState().clearCart();
+      order.items.forEach((ci: any) => {
+        useCartStore.getState().addToCart(
+          order.restaurant,
+          ci.dish,
+          ci.quantity,
+          ci.selectedOptions || [],
+          ci.note
+        );
+      });
+      nav.navigate('Cart');
+    };
+
+    if (currentCartRestaurant && currentCartRestaurant.id !== order.restaurant.id) {
+      const msg = `Giỏ hàng đang có món của "${currentCartRestaurant.name}". Bạn có muốn xóa giỏ cũ để đặt lại đơn quán "${order.restaurant.name}" không?`;
+      if (Platform.OS === 'web') {
+        if (globalThis.confirm(msg)) doReorder();
+      } else {
+        Alert.alert('Đổi quán ăn', msg, [
+          { text: 'Hủy', style: 'cancel' },
+          { text: 'Đồng ý', onPress: doReorder },
+        ]);
+      }
+    } else {
+      doReorder();
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -93,9 +137,24 @@ export default function OrderHistoryScreen() {
               </View>
             </View>
 
-            <View style={styles.viewDetailsRow}>
-              <Text style={styles.viewDetailsText}>Chi tiết đơn hàng</Text>
-              <Ionicons name="chevron-forward" size={16} color={colors.primary} />
+            <View style={styles.actionsRow}>
+              {item.status === 'completed' && (
+                <TouchableOpacity
+                  style={styles.reorderBtn}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    handleReorder(item);
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="repeat" size={15} color={colors.primary} />
+                  <Text style={styles.reorderBtnText}>Đặt lại đơn</Text>
+                </TouchableOpacity>
+              )}
+              <View style={styles.viewDetailsRow}>
+                <Text style={styles.viewDetailsText}>Chi tiết đơn hàng</Text>
+                <Ionicons name="chevron-forward" size={16} color={colors.primary} />
+              </View>
             </View>
           </TouchableOpacity>
         )}
@@ -119,42 +178,61 @@ const styles = StyleSheet.create({
   tabText: { color: colors.muted, fontWeight: '600', fontSize: 14 },
   tabTextActive: { color: '#fff', fontWeight: '700' },
 
-  emptyWrap: { alignItems: 'center', marginTop: 60 },
-  empty: { fontSize: 14, color: colors.muted, marginTop: 12 },
-
   card: {
-    backgroundColor: colors.card,
+    backgroundColor: '#fff',
     borderRadius: radius.lg,
-    padding: spacing.md + 2,
+    padding: spacing.md,
     marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
     ...shadow,
   },
   headerCard: { flexDirection: 'row', alignItems: 'center' },
-  thumb: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: colors.border },
+  thumb: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: '#f0f0f0' },
   restaurant: { fontSize: 16, fontWeight: '700', color: colors.text },
   time: { fontSize: 12, color: colors.muted, marginTop: 2 },
+
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
-  badgeActive: { backgroundColor: colors.primaryLight },
-  badgeCompleted: { backgroundColor: '#F0F2F5' },
+  badgeActive: { backgroundColor: '#E8F5E9' },
+  badgeCompleted: { backgroundColor: '#F5F5F5' },
   badgeText: { fontSize: 11, fontWeight: '700' },
-  badgeTextActive: { color: colors.primaryDark },
+  badgeTextActive: { color: colors.primary },
   badgeTextCompleted: { color: colors.muted },
 
-  divider: { height: 1, backgroundColor: colors.border, marginVertical: spacing.md },
-  bodyCard: { marginBottom: 6 },
-  itemSummary: { fontSize: 13, color: colors.text, marginBottom: 8 },
+  divider: { height: 1, backgroundColor: colors.border, marginVertical: spacing.sm },
+
+  bodyCard: { marginBottom: spacing.xs },
+  itemSummary: { fontSize: 13, color: colors.muted, marginBottom: spacing.xs },
   footerCard: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   totalLabel: { fontSize: 13, color: colors.muted },
-  total: { fontSize: 16, fontWeight: '800', color: colors.primary },
+  total: { fontSize: 15, fontWeight: '800', color: colors.text },
 
-  viewDetailsRow: {
+  actionsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    marginTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#F5F6F8',
-    paddingTop: 8,
+    justifyContent: 'space-between',
+    marginTop: spacing.sm,
+    paddingTop: spacing.xs,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
   },
-  viewDetailsText: { fontSize: 12, fontWeight: '700', color: colors.primary, marginRight: 2 },
+  reorderBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primaryLight,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: radius.pill,
+  },
+  reorderBtnText: {
+    marginLeft: 5,
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.primaryDark,
+  },
+  viewDetailsRow: { flexDirection: 'row', alignItems: 'center', marginLeft: 'auto' },
+  viewDetailsText: { fontSize: 13, fontWeight: '700', color: colors.primary, marginRight: 2 },
+
+  emptyWrap: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
+  empty: { fontSize: 14, color: colors.muted, marginTop: spacing.md, textAlign: 'center' },
 });

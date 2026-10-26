@@ -11,17 +11,34 @@ export const AUTO_ADVANCE_SECONDS = 5;
 
 interface OrderState {
   orders: Order[];
-  placeOrder: (p: { restaurant: Restaurant; items: CartItem[]; pricing: CartPricing; voucherCode?: string; paymentMethod: PaymentMethod; address: string }) => Order;
+  placeOrder: (p: { restaurant: Restaurant; items: CartItem[]; pricing: CartPricing; voucherCode?: string; paymentMethod: PaymentMethod; address: string; userId?: string }) => Order;
   advance: (id: string) => void;
+  clearOrders: () => void;
 }
 
-export const useOrderStore = create<OrderState>((set) => ({
+let orderCounter = 0;
+function generateOrderId(): string {
+  orderCounter = (orderCounter + 1) % 10000;
+  const now = Date.now();
+  const rand = Math.floor(Math.random() * 900 + 100);
+  return `GF${now.toString().slice(-6)}${String(orderCounter).padStart(2, '0')}${rand}`;
+}
+
+export const useOrderStore = create<OrderState>((set, get) => ({
   orders: [],
-  placeOrder: ({ restaurant, items, pricing, voucherCode, paymentMethod, address }) => {
+  placeOrder: ({ restaurant, items, pricing, voucherCode, paymentMethod, address, userId }) => {
     const order: Order = {
-      id: 'GF' + Date.now().toString().slice(-6), restaurant, items, ...pricing,
-      voucherCode, paymentMethod, address, status: 'placed', createdAt: Date.now(),
-    };
+      id: generateOrderId(),
+      restaurant,
+      items,
+      ...pricing,
+      voucherCode,
+      paymentMethod,
+      address,
+      status: 'placed',
+      createdAt: Date.now(),
+      ...(userId ? { userId } : {}),
+    } as Order;
     set((s) => ({ orders: [order, ...s.orders] }));
     return order;
   },
@@ -32,4 +49,5 @@ export const useOrderStore = create<OrderState>((set) => ({
         return o.id === id && i < STATUS_FLOW.length - 1 ? { ...o, status: STATUS_FLOW[i + 1] } : o;
       }),
     })),
+  clearOrders: () => set({ orders: [] }),
 }));

@@ -1,4 +1,3 @@
-
 const HANOI_ADDRESSES = {
   r1: '25 Nhà Thờ, Hàng Trống, Hoàn Kiếm, Hà Nội', // Phúc Long
   r2: '47 Hàng Bài, Tràng Tiền, Hoàn Kiếm, Hà Nội', // The Alley
@@ -21,16 +20,16 @@ const U = (id, w = 600, h = 400) => {
 
 // 1. Ảnh mặt tiền quán ăn - Riêng biệt cho từng quán
 const RESTAURANT_IMG = {
-  r1: '1517248135467-4c7edcad34c4', // Trà Sữa Phúc Long (Quán trà xanh hiện đại)
-  r2: '1497534446932-c925b458314e', // The Alley (Cốc trà hươu sang trọng)
-  r3: '1590846406792-0adc7f938f1d', // Gong Cha (Quán trà Đài Loan)
-  r4: '1552566626-52f8b828add9', // Cơm Tấm Cali (Nhà hàng ấm cúng)
-  r5: '1555396273-367ea4eb4db5', // Cơm Gà Hải Nam (Quán ăn phong cách Á Đông)
-  r6: '1582878826629-29b7ad1cdc43', // Phở Thìn Bờ Hồ (Bát phở truyền thống)
-  r7: '1509722747041-616f39b57569', // Bún Chả Hương Liên (Bún chả Hà Nội)
-  r8: '1562967914-608f82629710', // KFC (Gà rán)
-  r9: '1572802419224-296b0aeee0d9', // Lotteria (Burger)
-  r10: '1565299624946-b28f40a0ae38', // Pizza 4P's (Lò nướng pizza Ý)
+  r1: '1517248135467-4c7edcad34c4', // Trà Sữa Phúc Long
+  r2: '1497534446932-c925b458314e', // The Alley
+  r3: '1590846406792-0adc7f938f1d', // Gong Cha
+  r4: '1552566626-52f8b828add9', // Cơm Tấm Cali
+  r5: '1555396273-367ea4eb4db5', // Cơm Gà Hải Nam
+  r6: '1582878826629-29b7ad1cdc43', // Phở Thìn Bờ Hồ
+  r7: '1509722747041-616f39b57569', // Bún Chả Hương Liên
+  r8: '1562967914-608f82629710', // KFC
+  r9: '1572802419224-296b0aeee0d9', // Lotteria
+  r10: '1565299624946-b28f40a0ae38', // Pizza 4P's
 };
 
 const categories = [
@@ -67,7 +66,7 @@ const restaurants = R.map(([id, name, categoryId, rating, distanceKm, etaMin]) =
   promo: rating >= 4.7 ? 'Giảm 15%' : null,
 }));
 
-// 2. Thực đơn chuyên biệt theo bản sắc từng nhà hàng (Không còn bị bê nguyên xi 1 menu cho nhiều quán)
+// 2. Thực đơn chuyên biệt theo bản sắc từng nhà hàng (4 món/quán = 40 món hoàn chỉnh)
 // Cấu trúc: [Tên món, Giá, Nhóm, Mô tả, PhotoUnsplashID, CóOption]
 const RESTAURANT_MENUS = {
   // Trà Sữa Phúc Long
@@ -83,6 +82,7 @@ const RESTAURANT_MENUS = {
     ['Sữa tươi trân châu đường đen', 65000, 'Món đặc trưng', 'Đường đen Okinawa nấu dẻo kết hợp sữa tươi thanh trùng', '1558857563-b371033873b8', true],
     ['Lục trà sữa trân châu', 55000, 'Trà sữa', 'Lục trà lài thơm ngát quyện trân châu đường đen', '1515823064-d6e0c04616a7', true],
     ['Trà xoài kem tuyết', 60000, 'Đá xay', 'Xoài cát tươi xay nhuyễn phủ lớp kem cheese mặn', '1546173159-315724a31696', true],
+    ['Sữa chua trân châu đường đen', 50000, 'Đặc biệt', 'Sữa chua dẻo kết hợp trân châu đường đen ấm nóng', 'https://images.pexels.com/photos/11160112/pexels-photo-11160112.jpeg?auto=compress&cs=tinysrgb&w=500', true],
   ],
 
   // Gong Cha
@@ -90,6 +90,7 @@ const RESTAURANT_MENUS = {
     ['Alisan Gong Cha Macchiato', 55000, 'Best seller', 'Trà Alisan thượng hạng phủ lớp váng sữa sánh mịn', 'https://images.pexels.com/photos/11160112/pexels-photo-11160112.jpeg?auto=compress&cs=tinysrgb&w=500', true],
     ['Trà sữa ô long', 48000, 'Trà sữa', 'Trà ô long nướng Đài Loan hương vị đậm đà', '1572490122747-3968b75cc699', true],
     ['Trà chanh vàng bưởi đỏ', 50000, 'Trà trái cây', 'Vị chua ngọt sảng khoái vitamin C dồi dào', '1513558161293-cdaf765ed2fd', true],
+    ['Trà xanh Alisan chanh dây', 49000, 'Trà trái cây', 'Trà xanh thanh tao hòa cùng sốt chanh dây tươi mát', '1556679343-c7306c1976bc', true],
   ],
 
   // Cơm Tấm Cali
@@ -105,6 +106,7 @@ const RESTAURANT_MENUS = {
     ['Cơm gà luộc Hải Nam', 58000, 'Món đặc trưng', 'Thịt gà luộc da vàng mọng nước, hạt cơm nấu nước luộc gà béo ngậy', '1598515214211-89d3c73ae83b', false],
     ['Cơm gà xối mỡ đùi góc tư', 62000, 'Món chính', 'Đùi gà xối mỡ da giòn rụm chấm sốt gừng ớt', '1626645738196-c2a7c87a8f58', false],
     ['Canh gà hầm nấm đông cô', 25000, 'Canh phụ', 'Canh gà thanh ngọt bổ dưỡng hầm cùng nấm tươi', '1547592166-23ac45744acd', false],
+    ['Cơm lòng gà trứng non', 55000, 'Món phụ', 'Lòng mề gà xào đậm đà kèm chùm trứng non vàng ươm béo ngậy', '1544025162-d76694265947', false],
   ],
 
   // Phở Thìn Bờ Hồ
@@ -119,6 +121,7 @@ const RESTAURANT_MENUS = {
   r7: [
     ['Bún chả đặc biệt (Chả miếng + Chả băm)', 60000, 'Món chính', 'Chả nướng than hoa đượm khói, nước chấm đu đủ tỏi ớt ấm nóng', '1555126634-323283e090fa', false],
     ['Nem cua bể hải sản', 40000, 'Món ăn kèm', 'Nem vuông giòn tan đẫm thịt cua bể tươi và tôm sú', 'https://images.pexels.com/photos/34623149/pexels-photo-34623149/free-photo-of-fresh-vietnamese-spring-rolls-with-dipping-sauce.jpeg?auto=compress&cs=tinysrgb&w=500', false],
+    ['Chả que nướng lá lốt', 35000, 'Món ăn kèm', 'Thịt bò băm cuốn lá lốt nướng than hoa thơm lừng', 'https://images.pexels.com/photos/8178762/pexels-photo-8178762.jpeg?auto=compress&cs=tinysrgb&w=500', false],
     ['Bún thêm / Rau sống', 10000, 'Món phụ', 'Phần bún sợi nhỏ thanh mát và đĩa rau kinh giới thơm', '1540420773420-3366772f4999', false],
   ],
 
@@ -126,6 +129,7 @@ const RESTAURANT_MENUS = {
   r8: [
     ['Combo Gà Rán Giòn Cay (2 Miếng)', 79000, 'Combo Hot', '2 miếng gà rán giòn rụm phủ gia vị cay đậm đà KFC', '1562967914-608f82629710', false],
     ['Burger Zinger Tôm giòn', 59000, 'Burger', 'Nhân tôm chiên xù giòn tan kèm sốt mayonnaise cay', '1572802419224-296b0aeee0d9', false],
+    ['Gà Popcorn vừa giòn cay', 42000, 'Gà viên', 'Gà viên chiên giòn rụm dễ ăn phủ bột gia vị cay', '1562967914-608f82629710', false],
     ['Khoai tây chiên cỡ vừa', 29000, 'Món phụ', 'Khoai tây cọng chiên vàng giòn rắc muối ớt', '1573080496219-bb080dd4f877', false],
   ],
 
@@ -133,6 +137,7 @@ const RESTAURANT_MENUS = {
   r9: [
     ['Gà rán sốt đậu ngọt', 75000, 'Gà sốt', 'Gà rán phủ nước sốt đậu ngọt bùi đặc trưng Lotteria', '1527477396000-e27163b481c2', false],
     ['Burger Bò Bulgogi Hàn Quốc', 55000, 'Burger', 'Bò nướng sốt Bulgogi trứ danh thơm ngọt đậm vị', '1568901346375-23c9450c58cd', false],
+    ['Mực chiên xù giòn tan', 45000, 'Món phụ', 'Mực khoanh tẩm bột chiên xù chấm sốt tương ớt ngọt', 'https://images.pexels.com/photos/8178762/pexels-photo-8178762.jpeg?auto=compress&cs=tinysrgb&w=500', false],
     ['Khoai tây lắc phô mai', 35000, 'Món phụ', 'Khoai tây chiên lắc cùng bột phô mai béo ngậy', '1585109649139-366815a0d713', false],
   ],
 
@@ -141,6 +146,7 @@ const RESTAURANT_MENUS = {
     ['Pizza 4 Loại Phô Mai (4 Cheese)', 175000, 'Pizza', 'Phô mai Camembert, Mozzarella, Gorgonzola kèm mật ong hữu cơ', '1513104890138-7c749659a591', false],
     ['Pizza Phô Mai Burrata Thịt Nguội', 195000, 'Pizza Signature', 'Trái phô mai Burrata tươi béo ngậy kèm dăm bông Parma Ham', '1565299624946-b28f40a0ae38', false],
     ['Mì Ý sốt kem cua biển', 160000, 'Mì Ý Pasta', 'Mì Ý sốt kem cà chua thơm nức quyện thịt cua xé tay', '1551183053-bf91a1d81141', false],
+    ['Salad hoa quả sốt chanh leo', 95000, 'Khai vị', 'Rau rocket, táo, cam kèm phô mai tươi và sốt chanh leo', '1540420773420-3366772f4999', false],
   ],
 };
 
@@ -189,6 +195,8 @@ const vouchers = [
   { id: 'v1', code: 'GIAM15K', title: 'Giảm 15.000đ', type: 'amount', value: 15000, minOrder: 50000 },
   { id: 'v2', code: 'FREESHIP', title: 'Miễn phí giao hàng', type: 'freeship', value: 0, minOrder: 40000 },
   { id: 'v3', code: 'SALE10', title: 'Giảm 10% (tối đa 30k)', type: 'percent', value: 10, maxDiscount: 30000, minOrder: 100000 },
+  { id: 'v4', code: 'GIAM30K', title: 'Giảm 30.000đ đơn từ 120k', type: 'amount', value: 30000, minOrder: 120000 },
+  { id: 'v5', code: 'BANMOI', title: 'Giảm 20.000đ cho bạn mới', type: 'amount', value: 20000, minOrder: 60000 },
 ];
 
 const out = path.join(__dirname, '..', 'src', 'data');
@@ -198,4 +206,4 @@ w('categories', categories);
 w('restaurants', restaurants);
 w('dishes', dishes);
 w('vouchers', vouchers);
-console.log(restaurants.length, 'restaurants,', dishes.length, 'dishes completely individualized and realistic!');
+console.log(restaurants.length, 'restaurants,', dishes.length, 'dishes,', vouchers.length, 'vouchers completely individualized and realistic!');

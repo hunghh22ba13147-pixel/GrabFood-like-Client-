@@ -15,9 +15,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Dish, Restaurant } from '../../models/types';
 import { RootStackParamList } from '../../navigation/types';
 import { api } from '../../services/api';
-import { useCartStore } from '../../store/cartStore';
 import { colors, formatVND, radius, spacing } from '../../theme';
-import { buildCartItem } from './buildCartItem';
 import {
   calcItemTotalPrice,
   createDefaultSelectedOptions,
@@ -28,6 +26,7 @@ import OptionGroupSection from './OptionGroupSection';
 import QuantityStepper from './QuantityStepper';
 import { SelectedOption } from './restaurantMenuTypes';
 import { showToast } from '../../components/Toast';
+import { addToCartWithConfirmation } from '../cart/addToCartWithConfirmation';
 
 type DishOptionsScreenProps = NativeStackScreenProps<RootStackParamList, 'DishOptions'>;
 
@@ -41,10 +40,6 @@ export default function DishOptionsScreen({ navigation, route }: DishOptionsScre
   const [quantity, setQuantity] = useState(1);
   const [note, setNote] = useState('');
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
-  const addToCart = useCartStore((state) => state.addToCart);
-  const clearCart = useCartStore((state) => state.clear);
-  const currentCartRestaurant = useCartStore((state) => state.restaurant);
-  const needsConfirmSwitch = useCartStore((state) => state.needsConfirmSwitch);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,51 +78,39 @@ export default function DishOptionsScreen({ navigation, route }: DishOptionsScre
     setSelectedOptions((current) => toggleSelectedChoice(current, optionId, choiceId, multiple));
   };
 
-  const commitAddToCart = (targetRestaurant: Restaurant, targetDish: Dish) => {
-    const cartItem = buildCartItem({
-      dish: targetDish,
-      quantity,
-      selectedOptions,
-      note,
-    });
-    addToCart(
-      targetRestaurant,
-      cartItem.dish,
-      cartItem.quantity,
-      cartItem.selectedOptions,
-      cartItem.note,
-    );
-    showToast('Đã thêm vào giỏ hàng');
-    navigation.goBack();
-  };
-
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!restaurant || !dish) return;
     const missing = getMissingRequiredOptionNames(dish, selectedOptions);
     if (missing.length > 0) {
-      Alert.alert('Chưa chọn đủ', `Vui lòng chọn: ${missing.join(', ')}`);
+      const msg = `Vui lòng chọn: ${missing.join(', ')}`;
+      if (Platform.OS === 'web') {
+        globalThis.alert(`Chưa chọn đủ\n${msg}`);
+      } else {
+        Alert.alert('Chưa chọn đủ', msg);
+      }
       return;
     }
-    if (needsConfirmSwitch(restaurant.id)) {
-      const prevName = currentCartRestaurant?.name || 'quán trước đó';
-      Alert.alert(
-        'Bạn muốn đặt món ở quán mới?',
-        `Giỏ hàng của bạn đang có món của "${prevName}". GrabFood chỉ hỗ trợ đặt 1 quán mỗi đơn.\n\nBạn có muốn xoá giỏ hàng hiện tại để đặt tại "${restaurant.name}" không?`,
-        [
-          { text: 'Giữ món cũ', style: 'cancel' },
-          {
-            text: 'Tạo đơn mới',
-            style: 'destructive',
-            onPress: () => {
-              clearCart();
-              commitAddToCart(restaurant, dish);
-            },
-          },
-        ],
+
+    try {
+      const added = await addToCartWithConfirmation(
+        restaurant,
+        dish,
+        quantity,
+        selectedOptions,
+        note.trim() ? note.trim() : undefined,
       );
-      return;
+      if (added) {
+        showToast('Đã thêm vào giỏ hàng');
+        navigation.goBack();
+      }
+    } catch (err: any) {
+      const msg = err?.message || 'Không thể thêm món vào giỏ hàng.';
+      if (Platform.OS === 'web') {
+        globalThis.alert(msg);
+      } else {
+        Alert.alert('Lỗi thêm món', msg);
+      }
     }
-    commitAddToCart(restaurant, dish);
   };
 
   return (
@@ -190,7 +173,14 @@ export default function DishOptionsScreen({ navigation, route }: DishOptionsScre
 
 const styles = StyleSheet.create({
   root: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.45)' },
+  backdrop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+  },
   sheetWrap: { maxHeight: '88%' },
   sheet: {
     backgroundColor: colors.bg,

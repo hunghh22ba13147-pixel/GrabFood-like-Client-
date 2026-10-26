@@ -139,6 +139,7 @@ interface CartState {
   removeItem: (key: string) => void;
   applyVoucher: (v: Voucher | null) => void;
   clear: () => void;
+  clearCart: () => void;
   totalCount: () => number;
 }
 
@@ -187,6 +188,9 @@ export const useCartStore = create<CartState>((set, get) => ({
       requireValue(!issue, issue ?? 'Mã không hợp lệ.');
     }
     set({ voucher: voucher ? { ...voucher } : null });
+  },
+  clearCart: () => {
+    set({ items: [], restaurant: null, voucher: null, checkoutLocked: false });
   },
   clear: () => {
     requireValue(!get().checkoutLocked, 'Đang tạo đơn. Vui lòng chờ.');

@@ -11,7 +11,7 @@ import { useCartStore } from '../../store/cartStore';
 import { useOrderStore } from '../../store/orderStore';
 import { colors, radius, spacing } from '../../theme';
 import { ActionButton, displayMoney, EmptyCart, ErrorMessage, PricingBreakdown, readCartPricing, styles } from './CartComponents';
-import { checkoutReview, createCheckoutController } from './checkout';
+import { checkoutReview, createCheckoutController, isValidAddress } from './checkout';
 import VoucherPicker from './VoucherPicker';
 import AddressPicker, { PickedAddress } from '../../components/AddressPicker';
 import { showToast } from '../../components/Toast';
@@ -21,7 +21,7 @@ export default function CheckoutScreen() {
   const cart = useCartStore();
   const user = useAuthStore((state) => state.user);
   const updateProfile = useAuthStore((state) => state.updateProfile);
-  const address = user?.address ?? '18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội';
+  const address = user?.address ?? '';
 
   const [payment, setPayment] = useState<PaymentMethod | null>('cash');
   const [showAddressPicker, setShowAddressPicker] = useState(false);
@@ -29,7 +29,7 @@ export default function CheckoutScreen() {
   const controllerRef = useRef<ReturnType<typeof createCheckoutController> | null>(null);
   if (!controllerRef.current) controllerRef.current = createCheckoutController({
     placeOrder: (payload) => useOrderStore.getState().placeOrder(payload),
-    getAddress: () => useAuthStore.getState().user?.address ?? '18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội',
+    getAddress: () => useAuthStore.getState().user?.address ?? '',
     openTracking: (orderId) => nav.replace('OrderTracking', { orderId }),
   });
   const controller = controllerRef.current;
@@ -37,6 +37,7 @@ export default function CheckoutScreen() {
   const { pricing, error: pricingError, voucherError } = readCartPricing(cart);
   const review = pricing ? checkoutReview(cart, address) : null;
   const busy = state.phase === 'submitting' || cart.checkoutLocked;
+  const hasValidAddress = isValidAddress(address);
 
   const handleSelectAddress = async (place: PickedAddress) => {
     setShowAddressPicker(false);
@@ -66,21 +67,29 @@ export default function CheckoutScreen() {
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {/* Mục Địa chỉ giao hàng - Bấm vào là đổi được ngay */}
         <TouchableOpacity
-          style={[styles.card, { borderColor: colors.primary, borderWidth: 1 }]}
+          style={[styles.card, { borderColor: hasValidAddress ? colors.primary : colors.danger, borderWidth: 1 }]}
           onPress={() => setShowAddressPicker(true)}
           activeOpacity={0.8}
         >
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Ionicons name="location" size={18} color={colors.primary} />
+              <Ionicons name="location" size={18} color={hasValidAddress ? colors.primary : colors.danger} />
               <Text style={[styles.sectionTitle, { marginLeft: 6, marginBottom: 0 }]}>Địa chỉ giao hàng</Text>
             </View>
             <View style={{ backgroundColor: colors.primaryLight, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 }}>
-              <Text style={{ color: colors.primaryDark, fontSize: 12, fontWeight: '700' }}>Thay đổi</Text>
+              <Text style={{ color: colors.primaryDark, fontSize: 12, fontWeight: '700' }}>
+                {hasValidAddress ? 'Thay đổi' : 'Chọn địa chỉ'}
+              </Text>
             </View>
           </View>
-          <Text style={[styles.body, { fontWeight: '700', color: colors.text }]}>{address}</Text>
-          <Text style={{ fontSize: 11, color: colors.muted, marginTop: 4 }}>Chạm vào đây để chọn vị trí trên bản đồ hoặc tìm kiếm</Text>
+          <Text style={[styles.body, { fontWeight: '700', color: hasValidAddress ? colors.text : colors.danger }]}>
+            {hasValidAddress ? address : 'Chưa có địa chỉ giao hàng'}
+          </Text>
+          <Text style={{ fontSize: 11, color: hasValidAddress ? colors.muted : colors.danger, marginTop: 4 }}>
+            {hasValidAddress
+              ? 'Chạm vào đây để chọn vị trí trên bản đồ hoặc tìm kiếm'
+              : 'Vui lòng chọn địa chỉ giao đến để có thể đặt đơn.'}
+          </Text>
         </TouchableOpacity>
 
         {/* Tóm tắt nhà hàng & Món ăn */}
@@ -118,7 +127,7 @@ export default function CheckoutScreen() {
             onPress={() => setPayment('wallet')}
           >
             <Ionicons name="wallet-outline" size={20} color={payment === 'wallet' ? colors.primary : colors.muted} />
-            <Text style={[s.payText, payment === 'wallet' && s.payTextActive]}>Ví điện tử GrabPay / Thẻ</Text>
+            <Text style={[s.payText, payment === 'wallet' && s.payTextActive]}>Ví điện tử GrabPay / Thẻ (Mô phỏng)</Text>
             {payment === 'wallet' && <Ionicons name="checkmark-circle" size={18} color={colors.primary} />}
           </Pressable>
         </View>
@@ -130,11 +139,15 @@ export default function CheckoutScreen() {
 
       {/* Footer đặt đơn */}
       <View style={styles.footer}>
-        <Text style={styles.muted}>Kiểm tra món, địa chỉ và tổng tiền trước khi đặt.</Text>
+        <Text style={styles.muted}>
+          {hasValidAddress
+            ? 'Kiểm tra món, địa chỉ và tổng tiền trước khi đặt.'
+            : 'Vui lòng chọn địa chỉ giao hàng hợp lệ ở trên.'}
+        </Text>
         <ActionButton
-          label={busy ? 'Đang tạo đơn…' : `Đặt đơn${pricing ? ' • ' + displayMoney(pricing.total) : ''}`}
+          label={busy ? 'Đang tạo đơn…' : !hasValidAddress ? 'Vui lòng chọn địa chỉ' : `Đặt đơn${pricing ? ' • ' + displayMoney(pricing.total) : ''}`}
           loading={busy}
-          disabled={!pricing || !!voucherError || !payment || !address.trim()}
+          disabled={!pricing || !!voucherError || !payment || !hasValidAddress}
           onPress={() => controller.submit(review, payment)}
         />
       </View>

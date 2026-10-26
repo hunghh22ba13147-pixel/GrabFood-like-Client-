@@ -23,5 +23,21 @@
     "value": 10,
     "maxDiscount": 30000,
     "minOrder": 100000
+  },
+  {
+    "id": "v4",
+    "code": "GIAM30K",
+    "title": "Giảm 30.000đ đơn từ 120k",
+    "type": "amount",
+    "value": 30000,
+    "minOrder": 120000
+  },
+  {
+    "id": "v5",
+    "code": "BANMOI",
+    "title": "Giảm 20.000đ cho bạn mới",
+    "type": "amount",
+    "value": 20000,
+    "minOrder": 60000
   }
 ]

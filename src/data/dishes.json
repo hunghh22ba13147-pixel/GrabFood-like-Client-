@@ -352,6 +352,63 @@
     ]
   },
   {
+    "id": "r2-d4",
+    "restaurantId": "r2",
+    "name": "Sữa chua trân châu đường đen",
+    "description": "Sữa chua dẻo kết hợp trân châu đường đen ấm nóng",
+    "price": 50000,
+    "group": "Đặc biệt",
+    "image": "https://images.pexels.com/photos/11160112/pexels-photo-11160112.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "Size M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "Size L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng giòn",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen dẻo",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding trứng béo",
+            "price": 10000
+          },
+          {
+            "id": "cheese-cream",
+            "name": "Kem Cheese Macchiato",
+            "price": 12000
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "r3-d1",
     "restaurantId": "r3",
     "name": "Alisan Gong Cha Macchiato",
@@ -523,6 +580,63 @@
     ]
   },
   {
+    "id": "r3-d4",
+    "restaurantId": "r3",
+    "name": "Trà xanh Alisan chanh dây",
+    "description": "Trà xanh thanh tao hòa cùng sốt chanh dây tươi mát",
+    "price": 49000,
+    "group": "Trà trái cây",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop&q=80",
+    "options": [
+      {
+        "id": "size",
+        "name": "Size",
+        "required": true,
+        "multiple": false,
+        "choices": [
+          {
+            "id": "M",
+            "name": "Size M",
+            "price": 0
+          },
+          {
+            "id": "L",
+            "name": "Size L",
+            "price": 7000
+          }
+        ]
+      },
+      {
+        "id": "topping",
+        "name": "Topping",
+        "required": false,
+        "multiple": true,
+        "choices": [
+          {
+            "id": "pearl-white",
+            "name": "Trân châu trắng giòn",
+            "price": 8000
+          },
+          {
+            "id": "pearl-black",
+            "name": "Trân châu đen dẻo",
+            "price": 8000
+          },
+          {
+            "id": "pudding",
+            "name": "Pudding trứng béo",
+            "price": 10000
+          },
+          {
+            "id": "cheese-cream",
+            "name": "Kem Cheese Macchiato",
+            "price": 12000
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "r4-d1",
     "restaurantId": "r4",
     "name": "Cơm tấm sườn nướng Cali",
@@ -593,6 +707,16 @@
     "options": []
   },
   {
+    "id": "r5-d4",
+    "restaurantId": "r5",
+    "name": "Cơm lòng gà trứng non",
+    "description": "Lòng mề gà xào đậm đà kèm chùm trứng non vàng ươm béo ngậy",
+    "price": 55000,
+    "group": "Món phụ",
+    "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop&q=80",
+    "options": []
+  },
+  {
     "id": "r6-d1",
     "restaurantId": "r6",
     "name": "Phở bò tái lăn truyền thống",
@@ -655,6 +779,16 @@
   {
     "id": "r7-d3",
     "restaurantId": "r7",
+    "name": "Chả que nướng lá lốt",
+    "description": "Thịt bò băm cuốn lá lốt nướng than hoa thơm lừng",
+    "price": 35000,
+    "group": "Món ăn kèm",
+    "image": "https://images.pexels.com/photos/8178762/pexels-photo-8178762.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "options": []
+  },
+  {
+    "id": "r7-d4",
+    "restaurantId": "r7",
     "name": "Bún thêm / Rau sống",
     "description": "Phần bún sợi nhỏ thanh mát và đĩa rau kinh giới thơm",
     "price": 10000,
@@ -685,6 +819,16 @@
   {
     "id": "r8-d3",
     "restaurantId": "r8",
+    "name": "Gà Popcorn vừa giòn cay",
+    "description": "Gà viên chiên giòn rụm dễ ăn phủ bột gia vị cay",
+    "price": 42000,
+    "group": "Gà viên",
+    "image": "https://images.unsplash.com/photo-1562967914-608f82629710?w=400&h=400&fit=crop&q=80",
+    "options": []
+  },
+  {
+    "id": "r8-d4",
+    "restaurantId": "r8",
     "name": "Khoai tây chiên cỡ vừa",
     "description": "Khoai tây cọng chiên vàng giòn rắc muối ớt",
     "price": 29000,
@@ -714,6 +858,16 @@
   },
   {
     "id": "r9-d3",
+    "restaurantId": "r9",
+    "name": "Mực chiên xù giòn tan",
+    "description": "Mực khoanh tẩm bột chiên xù chấm sốt tương ớt ngọt",
+    "price": 45000,
+    "group": "Món phụ",
+    "image": "https://images.pexels.com/photos/8178762/pexels-photo-8178762.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "options": []
+  },
+  {
+    "id": "r9-d4",
     "restaurantId": "r9",
     "name": "Khoai tây lắc phô mai",
     "description": "Khoai tây chiên lắc cùng bột phô mai béo ngậy",
@@ -750,6 +904,16 @@
     "price": 160000,
     "group": "Mì Ý Pasta",
     "image": "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=400&fit=crop&q=80",
+    "options": []
+  },
+  {
+    "id": "r10-d4",
+    "restaurantId": "r10",
+    "name": "Salad hoa quả sốt chanh leo",
+    "description": "Rau rocket, táo, cam kèm phô mai tươi và sốt chanh leo",
+    "price": 95000,
+    "group": "Khai vị",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=400&fit=crop&q=80",
     "options": []
   }
 ]

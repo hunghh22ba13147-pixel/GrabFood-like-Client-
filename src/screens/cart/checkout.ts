@@ -7,6 +7,16 @@ type PlaceOrder = ReturnType<typeof useOrderStore.getState>['placeOrder'];
 
 export interface CheckoutReview { pricing: CartPricing; fingerprint: string }
 
+export function isValidAddress(address?: string | null): boolean {
+  if (!address) return false;
+  const t = address.trim().toLowerCase();
+  if (!t) return false;
+  if (t === 'chưa thêm địa chỉ giao hàng' || t === 'chua them dia chi giao hang' || t.startsWith('chưa thêm địa chỉ')) {
+    return false;
+  }
+  return true;
+}
+
 /** The fingerprint also covers address/options/note, not only the total. */
 export function checkoutReview(cart: CartSnapshot, address: string): CheckoutReview {
   const pricing = calcPricing(cart.items, cart.restaurant, cart.voucher);
@@ -48,7 +58,9 @@ export function createCheckoutController(dependencies: {
       if (!cart.items.length || !cart.restaurant) throw new CartValidationError('Giỏ hàng trống. Vui lòng thêm món.');
       if (paymentMethod !== 'cash' && paymentMethod !== 'wallet') throw new CartValidationError('Vui lòng chọn phương thức thanh toán.');
       const address = dependencies.getAddress();
-      if (!address.trim()) throw new CartValidationError('Chưa có địa chỉ giao hàng. Vui lòng cập nhật trong Tài khoản.');
+      if (!isValidAddress(address)) {
+        throw new CartValidationError('Chưa có địa chỉ giao hàng hợp lệ. Vui lòng chọn địa chỉ giao đến.');
+      }
       const latest = checkoutReview(cart, address);
       if (!review || latest.fingerprint !== review.fingerprint) {
         throw new CartValidationError('Giỏ hàng hoặc địa chỉ đã thay đổi. Vui lòng kiểm tra lại trước khi đặt đơn.');
