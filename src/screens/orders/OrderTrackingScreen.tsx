@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useOrderStore, ordersForUser, STATUS_FLOW, STATUS_LABEL, AUTO_ADVANCE_SECONDS } from '../../store/orderStore';
 import { useAuthStore } from '../../store/authStore';
@@ -15,28 +15,98 @@ const STATUS_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   completed: 'checkmark-circle-outline',
 };
 
-const STATUS_DETAILS: Record<string, { title: string; subtitle: string; tip: string }> = {
-  placed: {
-    title: 'Đơn hàng đã được gửi!',
-    subtitle: 'Nhà hàng đang kiểm tra thực đơn và xác nhận đơn...',
-    tip: 'Bạn có thể hủy đơn miễn phí trước khi nhà hàng chuẩn bị.',
+export interface DriverInfo {
+  id: string;
+  name: string;
+  phone: string;
+  vehicle: string;
+  plate: string;
+  rating: number;
+  totalTrips: number;
+}
+
+export const DRIVERS: DriverInfo[] = [
+  {
+    id: 'drv-1',
+    name: 'Nguyễn Văn Hùng',
+    phone: '0982 123 456',
+    vehicle: 'Honda Wave Alpha',
+    plate: '29A1-888.88',
+    rating: 4.9,
+    totalTrips: 1840,
   },
-  preparing: {
-    title: 'Nhà hàng đang làm món!',
-    subtitle: 'Bếp đang nấu theo yêu cầu ghi chú của bạn thật kỹ lưỡng.',
-    tip: 'Tài xế GrabFood đang di chuyển tới quán để nhận món.',
+  {
+    id: 'drv-2',
+    name: 'Trần Đình Trọng',
+    phone: '0973 889 912',
+    vehicle: 'Yamaha Sirius Fi',
+    plate: '29B2-678.39',
+    rating: 5.0,
+    totalTrips: 2150,
   },
-  delivering: {
-    title: 'Tài xế đang giao đến bạn!',
-    subtitle: 'Bác tài Nguyễn Văn Hùng (Xe máy 29A1-888.88) đang trên đường tới.',
-    tip: 'Hãy chuẩn bị điện thoại sẵn sàng khi tài xế gọi nhé!',
+  {
+    id: 'drv-3',
+    name: 'Lê Hoàng Long',
+    phone: '0912 456 789',
+    vehicle: 'Honda Vision Trắng',
+    plate: '29E1-567.89',
+    rating: 4.8,
+    totalTrips: 920,
   },
-  completed: {
-    title: 'Giao hàng thành công!',
-    subtitle: 'Cảm ơn bạn đã lựa chọn đặt đồ ăn tại GrabFood.',
-    tip: 'Chúc bạn có bữa ăn thật ngon miệng!',
+  {
+    id: 'drv-4',
+    name: 'Phạm Đức Anh',
+    phone: '0968 334 556',
+    vehicle: 'Honda Lead Vàng',
+    plate: '29D1-923.45',
+    rating: 4.9,
+    totalTrips: 1460,
   },
-};
+];
+
+export function getDriverForOrder(orderId?: string): DriverInfo {
+  if (!orderId) return DRIVERS[0];
+  let hash = 0;
+  for (let i = 0; i < orderId.length; i++) {
+    hash = (hash * 31 + orderId.charCodeAt(i)) >>> 0;
+  }
+  return DRIVERS[hash % DRIVERS.length];
+}
+
+function getStatusDetails(status: string, driver: DriverInfo): { title: string; subtitle: string; tip: string } {
+  switch (status) {
+    case 'placed':
+      return {
+        title: 'Đơn hàng đã được gửi!',
+        subtitle: 'Nhà hàng đang kiểm tra thực đơn và xác nhận đơn...',
+        tip: 'Bạn có thể hủy đơn miễn phí trước khi nhà hàng chuẩn bị.',
+      };
+    case 'preparing':
+      return {
+        title: 'Nhà hàng đang làm món!',
+        subtitle: `Tài xế ${driver.name} đã nhận đơn và đang di chuyển tới quán.`,
+        tip: 'Bếp đang nấu theo yêu cầu ghi chú của bạn thật kỹ lưỡng.',
+      };
+    case 'delivering':
+      return {
+        title: 'Tài xế đang giao đến bạn!',
+        subtitle: `Bác tài ${driver.name} (${driver.vehicle} - ${driver.plate}) đang trên đường tới.`,
+        tip: 'Hãy chuẩn bị điện thoại sẵn sàng khi tài xế gọi nhé!',
+      };
+    case 'completed':
+      return {
+        title: 'Giao hàng thành công!',
+        subtitle: `Đơn hàng đã được tài xế ${driver.name} giao tận tay cho bạn.`,
+        tip: 'Chúc bạn có bữa ăn thật ngon miệng!',
+      };
+    default:
+      return {
+        title: 'Đang xử lý đơn hàng',
+        subtitle: 'Vui lòng chờ trong giây lát...',
+        tip: 'Hệ thống đang kết nối tài xế gần bạn nhất.',
+      };
+  }
+}
 
 export default function OrderTrackingScreen({ route }: any) {
   const orders = useOrderStore((s) => s.orders);
@@ -66,7 +136,8 @@ export default function OrderTrackingScreen({ route }: any) {
 
   const currentIdx = STATUS_FLOW.indexOf(order.status);
   const isDone = order.status === 'completed';
-  const detail = STATUS_DETAILS[order.status] || STATUS_DETAILS.placed;
+  const driver = getDriverForOrder(order.id);
+  const detail = getStatusDetails(order.status, driver);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
@@ -151,6 +222,40 @@ export default function OrderTrackingScreen({ route }: any) {
         </View>
       </View>
 
+      {/* Thẻ thông tin tài xế nhận đơn */}
+      {order.status !== 'placed' && (
+        <View style={styles.driverCard}>
+          <View style={styles.driverAvatar}>
+            <Ionicons name="bicycle" size={24} color="#fff" />
+          </View>
+          <View style={{ flex: 1, marginLeft: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={styles.driverName}>{driver.name}</Text>
+              <View style={styles.ratingBadge}>
+                <Ionicons name="star" size={13} color="#F59E0B" />
+                <Text style={styles.ratingText}>{driver.rating.toFixed(1)}</Text>
+              </View>
+            </View>
+            <Text style={styles.driverVehicle}>
+              {driver.vehicle} • <Text style={{ fontWeight: '700', color: colors.text }}>{driver.plate}</Text>
+            </Text>
+            <Text style={styles.driverStats}>{driver.totalTrips.toLocaleString()} chuyến đi thành công</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.callButton}
+            onPress={() => {
+              const msg = `Đang kết nối tới bác tài ${driver.name}\nSố điện thoại: ${driver.phone}\n(Tính năng gọi điện mô phỏng)`;
+              if (Platform.OS === 'web') globalThis.alert(msg);
+              else Alert.alert('Liên hệ tài xế', msg);
+            }}
+            activeOpacity={0.8}
+            accessibilityLabel={`Gọi cho tài xế ${driver.name}`}
+          >
+            <Ionicons name="call" size={18} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      )}
+
       {/* Thông tin nhà hàng & Đơn hàng */}
       <View style={styles.card}>
         <View style={styles.restaurantRow}>
@@ -226,6 +331,67 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg, width: '100%', maxWidth: 540, alignSelf: 'center', padding: spacing.md },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg, padding: 20 },
   empty: { fontSize: 16, color: colors.muted, marginTop: 12, textAlign: 'center' },
+
+
+  // Thẻ tài xế
+  driverCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: radius.md,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    ...shadow,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  driverAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  driverName: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.text,
+  },
+  ratingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  ratingText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#92400E',
+    marginLeft: 3,
+  },
+  driverVehicle: {
+    fontSize: 12,
+    color: colors.muted,
+    marginTop: 2,
+  },
+  driverStats: {
+    fontSize: 11,
+    color: colors.primary,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  callButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+  },
 
   // Bản đồ minh họa
   mapSimulation: {
