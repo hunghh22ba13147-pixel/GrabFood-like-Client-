@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { Alert, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors, radius } from '../../theme';
@@ -82,7 +83,7 @@ export default function RegisterScreen() {
             autoCapitalize="none"
             textContentType="emailAddress"
           />
-          <Field label="Mật khẩu" value={password} onChangeText={setPassword} placeholder="Ít nhất 6 ký tự" secureTextEntry autoCapitalize="none" textContentType="newPassword" />
+          <Field label="Mật khẩu" value={password} onChangeText={setPassword} placeholder="Ít nhất 6 ký tự" secureTextEntry autoCapitalize="none" textContentType="oneTimeCode" />
           <Field
             label="Nhập lại mật khẩu"
             value={confirmation}
@@ -90,7 +91,7 @@ export default function RegisterScreen() {
             placeholder="Nhập lại mật khẩu"
             secureTextEntry
             autoCapitalize="none"
-            textContentType="newPassword"
+            textContentType="oneTimeCode"
           />
 
           <Pressable onPress={submit} disabled={busy} style={[styles.button, busy && { opacity: 0.65 }]}>
@@ -123,20 +124,29 @@ function Field(props: {
   secureTextEntry?: boolean;
   keyboardType?: 'email-address';
   autoCapitalize?: 'none' | 'words' | 'sentences';
-  textContentType?: 'name' | 'emailAddress' | 'newPassword' | 'password' | 'none';
+  textContentType?: 'name' | 'emailAddress' | 'newPassword' | 'password' | 'oneTimeCode' | 'none';
 }) {
-  const { label, ...inputProps } = props;
+  const { label, secureTextEntry, ...inputProps } = props;
+  const [hidden, setHidden] = useState(secureTextEntry);
   return (
     <>
       <Text style={styles.label}>{label}</Text>
-      <TextInput
-        {...inputProps}
-        autoComplete={props.keyboardType === 'email-address' ? 'email' : 'off'}
-        autoCorrect={false}
-        spellCheck={false}
-        style={styles.input}
-        placeholderTextColor="#9aa49e"
-      />
+      <View style={styles.inputWrap}>
+        <TextInput
+          {...inputProps}
+          secureTextEntry={hidden}
+          autoComplete="off"
+          autoCorrect={false}
+          spellCheck={false}
+          style={[styles.input, secureTextEntry ? { paddingRight: 42 } : undefined]}
+          placeholderTextColor="#9aa49e"
+        />
+        {secureTextEntry !== undefined && (
+          <Pressable onPress={() => setHidden(!hidden)} hitSlop={10} style={styles.eyeBtn}>
+            <Ionicons name={hidden ? 'eye-off-outline' : 'eye-outline'} size={20} color={colors.muted} />
+          </Pressable>
+        )}
+      </View>
     </>
   );
 }
@@ -150,6 +160,8 @@ const styles = StyleSheet.create({
   title: { fontSize: 28, fontWeight: '900', color: colors.text, marginTop: 7 },
   subtitle: { fontSize: 13, lineHeight: 19, color: colors.muted, marginTop: 7, marginBottom: 15 },
   label: { fontSize: 12, fontWeight: '700', color: colors.text, marginBottom: 7, marginTop: 11 },
+  inputWrap: { position: 'relative', justifyContent: 'center' },
+  eyeBtn: { position: 'absolute', right: 14, zIndex: 1 },
   input: { height: 48, paddingHorizontal: 14, borderRadius: radius.md, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.border, color: colors.text, fontSize: 14 },
   button: { height: 52, backgroundColor: colors.primary, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', marginTop: 23 },
   buttonText: { color: '#fff', fontWeight: '800', fontSize: 15 },
