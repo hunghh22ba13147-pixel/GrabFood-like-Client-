@@ -63,8 +63,8 @@ export default function RegisterScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 44 : 0}>
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false}>
           <View style={styles.mark}>
             <Text style={styles.markText}>G</Text>
           </View>
@@ -72,7 +72,7 @@ export default function RegisterScreen() {
           <Text style={styles.title}>Tham gia GrabFood</Text>
           <Text style={styles.subtitle}>Tạo tài khoản để lưu thông tin và đặt món nhanh hơn.</Text>
 
-          <Field label="Họ và tên" value={name} onChangeText={setName} placeholder="Tên của bạn" />
+          <Field label="Họ và tên" value={name} onChangeText={setName} placeholder="Tên của bạn" autoCapitalize="words" textContentType="name" />
           <Field
             label="Email"
             value={email}
@@ -80,14 +80,17 @@ export default function RegisterScreen() {
             placeholder="ban@email.com"
             keyboardType="email-address"
             autoCapitalize="none"
+            textContentType="emailAddress"
           />
-          <Field label="Mật khẩu" value={password} onChangeText={setPassword} placeholder="Ít nhất 6 ký tự" secureTextEntry />
+          <Field label="Mật khẩu" value={password} onChangeText={setPassword} placeholder="Ít nhất 6 ký tự" secureTextEntry autoCapitalize="none" textContentType="newPassword" />
           <Field
             label="Nhập lại mật khẩu"
             value={confirmation}
             onChangeText={setConfirmation}
             placeholder="Nhập lại mật khẩu"
             secureTextEntry
+            autoCapitalize="none"
+            textContentType="newPassword"
           />
 
           <Pressable onPress={submit} disabled={busy} style={[styles.button, busy && { opacity: 0.65 }]}>
@@ -119,7 +122,8 @@ function Field(props: {
   placeholder: string;
   secureTextEntry?: boolean;
   keyboardType?: 'email-address';
-  autoCapitalize?: 'none';
+  autoCapitalize?: 'none' | 'words' | 'sentences';
+  textContentType?: 'name' | 'emailAddress' | 'newPassword' | 'password' | 'none';
 }) {
   const { label, ...inputProps } = props;
   return (
@@ -128,6 +132,8 @@ function Field(props: {
       <TextInput
         {...inputProps}
         autoComplete={props.keyboardType === 'email-address' ? 'email' : 'off'}
+        autoCorrect={false}
+        spellCheck={false}
         style={styles.input}
         placeholderTextColor="#9aa49e"
       />
@@ -137,7 +143,7 @@ function Field(props: {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { flexGrow: 1, justifyContent: 'center', padding: 26 },
+  content: { padding: 26, paddingTop: 16, paddingBottom: 40 },
   mark: { width: 52, height: 52, borderRadius: 18, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
   markText: { color: '#fff', fontWeight: '900', fontSize: 30 },
   eyebrow: { fontSize: 10, fontWeight: '800', letterSpacing: 1.5, color: colors.primary },

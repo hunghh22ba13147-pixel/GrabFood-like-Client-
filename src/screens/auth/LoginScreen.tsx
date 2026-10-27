@@ -92,6 +92,9 @@ export default function LoginScreen() {
             keyboardType="email-address"
             placeholder="ban@email.com"
             placeholderTextColor="#9aa49e"
+            autoCorrect={false}
+            spellCheck={false}
+            textContentType="emailAddress"
             style={styles.input}
           />
 
@@ -101,6 +104,10 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             secureTextEntry
             autoComplete="password"
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+            textContentType="password"
             placeholder="Ít nhất 6 ký tự"
             placeholderTextColor="#9aa49e"
             style={styles.input}
@@ -134,7 +141,7 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { flexGrow: 1, justifyContent: 'center', padding: 26 },
+  content: { flexGrow: 1, padding: 26, paddingTop: 20, paddingBottom: 40 },
   mark: { width: 52, height: 52, borderRadius: 18, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
   markText: { color: '#fff', fontWeight: '900', fontSize: 30 },
   eyebrow: { fontSize: 10, fontWeight: '800', letterSpacing: 1.5, color: colors.primary },
