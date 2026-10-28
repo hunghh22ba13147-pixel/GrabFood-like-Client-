@@ -141,10 +141,16 @@ export default function LoginScreen() {
             style={styles.input}
           />
 
+          <View style={styles.forgotRow}>
+            <Pressable onPress={handleForgotPassword} disabled={busy || resending || resetting}>
+              <Text style={styles.forgotText}>{resetting ? 'Đang gửi email…' : 'Quên mật khẩu?'}</Text>
+            </Pressable>
+          </View>
+
           <Pressable
             onPress={submit}
-            disabled={busy || resending}
-            style={[styles.button, (busy || resending) && { opacity: 0.65 }]}
+            disabled={busy || resending || resetting}
+            style={[styles.button, (busy || resending || resetting) && { opacity: 0.65 }]}
           >
             <Text style={styles.buttonText}>{busy ? 'Đang đăng nhập…' : 'Đăng nhập'}</Text>
           </Pressable>
