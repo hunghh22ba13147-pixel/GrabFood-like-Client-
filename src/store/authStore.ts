@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import {
-  createUserWithEmailAndPassword, reload, sendEmailVerification, signInWithEmailAndPassword,
+  createUserWithEmailAndPassword, reload, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword,
   signOut, updateProfile as updateFirebaseProfile, type User as FirebaseUser,
 } from 'firebase/auth';
 import type { User } from '../models/types';
@@ -20,6 +20,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<LoginResult>;
   register: (name: string, email: string, password: string) => Promise<void>;
   resendVerification: (email: string, password: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
   updateProfile: (changes: Partial<Pick<User, 'name' | 'phone' | 'address' | 'addresses'>>) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -247,6 +248,18 @@ export const useAuthStore = create<AuthState>((set, get) => {
       });
       check(token);
       set({ user: copyUser(record.profiles[user.id]) });
+    },
+    resetPassword: async (email) => {
+      const normalized = email.trim().toLowerCase();
+      if (!normalized || !normalized.includes('@')) throw new Error('auth/invalid-email');
+      if (!isFirebaseConfigured) return;
+      const auth = requireFirebaseAuth();
+      auth.languageCode = 'vi';
+      try {
+        await sendPasswordResetEmail(auth, normalized);
+      } catch (error) {
+        throw authError(error);
+      }
     },
     logout: async () => {
       const token = startIdentity();

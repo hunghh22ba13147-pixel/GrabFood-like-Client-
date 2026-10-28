@@ -19,11 +19,13 @@ export default function LoginScreen() {
   const navigation = useNavigation<any>();
   const login = useAuthStore((state) => state.login);
   const resendVerification = useAuthStore((state) => state.resendVerification);
+  const resetPassword = useAuthStore((state) => state.resetPassword);
   const hydrationError = useAuthStore((state) => state.hydrationError);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [resending, setResending] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const resend = async () => {
     if (!email.trim() || !password) {
@@ -38,6 +40,32 @@ export default function LoginScreen() {
       showAlert('Chưa gửi được thư', getAuthErrorMessage(error));
     } finally {
       setResending(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email.trim() || !email.includes('@')) {
+      showAlert('Cần nhập email', 'Vui lòng nhập địa chỉ email của bạn vào ô bên trên để nhận liên kết đổi mật khẩu.');
+      return;
+    }
+    setResetting(true);
+    try {
+      await resetPassword(email);
+      if (isFirebaseConfigured) {
+        showAlert(
+          'Đã gửi liên kết đổi mật khẩu',
+          `Firebase đã gửi liên kết đặt lại mật khẩu tới ${email.trim()}. Vui lòng kiểm tra hộp thư (kể cả mục Thư rác/Spam) và làm theo hướng dẫn.`
+        );
+      } else {
+        showAlert(
+          'Chế độ Demo',
+          'Ứng dụng đang ở chế độ Demo cục bộ. Bạn có thể nhập bất kỳ mật khẩu nào từ 6 ký tự trở lên để đăng nhập ngay mà không cần đổi mật khẩu.'
+        );
+      }
+    } catch (error) {
+      showAlert('Chưa thể gửi email', getAuthErrorMessage(error));
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -149,7 +177,9 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 13, lineHeight: 19, color: colors.muted, marginTop: 7, marginBottom: 15 },
   label: { fontSize: 12, fontWeight: '700', color: colors.text, marginBottom: 7, marginTop: 11 },
   input: { height: 48, paddingHorizontal: 14, borderRadius: radius.md, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.border, color: colors.text, fontSize: 14 },
-  button: { height: 52, backgroundColor: colors.primary, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', marginTop: 23 },
+  forgotRow: { alignSelf: 'flex-end', marginTop: 10, marginBottom: 8 },
+  forgotText: { color: colors.primary, fontSize: 13, fontWeight: '700' },
+  button: { height: 52, backgroundColor: colors.primary, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', marginTop: 12 },
   buttonText: { color: '#fff', fontWeight: '800', fontSize: 15 },
   row: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
   muted: { color: colors.muted, fontSize: 13 },
