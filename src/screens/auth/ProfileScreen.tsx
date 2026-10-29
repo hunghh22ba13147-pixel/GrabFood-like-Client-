@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { colors, radius } from '../../theme';
+import { colors, radius, formatVND } from '../../theme';
+import { useOrderStore, ordersForUser } from '../../store/orderStore';
 import { useAuthStore } from '../../store/authStore';
 import { isFirebaseConfigured } from '../../services/firebase';
 import AddressPicker, { PickedAddress } from '../../components/AddressPicker';
@@ -21,6 +22,9 @@ export default function ProfileScreen() {
   const [showAddressPicker, setShowAddressPicker] = useState(false);
   const [pickedAddress, setPickedAddress] = useState<PickedAddress | null>(null);
   const [saving, setSaving] = useState(false);
+  const allOrders = useOrderStore((s) => s.orders);
+  const myOrders = ordersForUser(allOrders, user?.id);
+  const totalSpent = myOrders.reduce((sum, o) => sum + (o.total ?? 0), 0);
   const addresses = user?.addresses ?? (user?.address && user.address !== EMPTY_ADDRESS
     ? [{ id: 'legacy-home', label: 'Địa chỉ đã lưu', address: user.address }]
     : []);
@@ -149,6 +153,24 @@ export default function ProfileScreen() {
           <Text style={styles.profileEmail}>{user?.email ?? ''}</Text>
         </View>
         <Text style={styles.badge}>{isFirebaseConfigured ? 'ONLINE' : 'DEMO'}</Text>
+      </View>
+
+      {/* Thống kê hoạt động của tài khoản */}
+      <View style={styles.activityCard}>
+        <View style={styles.activityItem}>
+          <Text style={styles.activityNum}>{myOrders.length}</Text>
+          <Text style={styles.activityLabel}>Đơn đã đặt</Text>
+        </View>
+        <View style={styles.activityDivider} />
+        <View style={styles.activityItem}>
+          <Text style={styles.activityNum}>{myOrders.filter((o) => o.status === 'completed').length}</Text>
+          <Text style={styles.activityLabel}>Hoàn thành</Text>
+        </View>
+        <View style={styles.activityDivider} />
+        <View style={styles.activityItem}>
+          <Text style={styles.activityNum}>{formatVND(totalSpent)}</Text>
+          <Text style={styles.activityLabel}>Tổng chi tiêu</Text>
+        </View>
       </View>
 
       <Text style={styles.section}>Thông tin cá nhân</Text>
@@ -306,4 +328,20 @@ const styles = StyleSheet.create({
   infoText: { fontSize: 11, lineHeight: 17, color: colors.text, marginTop: 4 },
   logout: { height: 48, backgroundColor: '#fff', borderWidth: 1, borderColor: '#f1cccc', borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', marginTop: 18 },
   logoutText: { color: colors.danger, fontSize: 13, fontWeight: '800' },
+  activityCard: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  activityItem: { alignItems: 'center' },
+  activityNum: { fontSize: 16, fontWeight: '800', color: colors.primaryDark },
+  activityLabel: { fontSize: 11, color: colors.muted, marginTop: 2 },
+  activityDivider: { width: 1, height: 26, backgroundColor: colors.border },
 });

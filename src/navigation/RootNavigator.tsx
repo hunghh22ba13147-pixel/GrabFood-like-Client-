@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -27,6 +27,9 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
 function Tabs() {
+  useEffect(() => {
+    useOrderStore.getState().hydrateOrders();
+  }, []);
   const icons: Record<keyof TabParamList, keyof typeof Ionicons.glyphMap> = {
     Home: 'home',
     Orders: 'receipt',

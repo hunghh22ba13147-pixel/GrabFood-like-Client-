@@ -133,21 +133,42 @@ export default function OrderHistoryScreen() {
 
             <View style={styles.actionsRow}>
               {item.status === 'completed' && (
-                <TouchableOpacity
-                  style={styles.reorderBtn}
-                  disabled={reordering !== null}
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    return handleReorder(item);
-                  }}
-                  activeOpacity={0.8}
-                >
-                  <Ionicons name="repeat" size={15} color={colors.primary} />
-                  <Text style={styles.reorderBtnText}>{reordering === item.id ? 'Đang chuẩn bị…' : 'Đặt lại đơn'}</Text>
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
+                  <TouchableOpacity
+                    style={styles.reorderBtn}
+                    disabled={reordering !== null}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      return handleReorder(item);
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <Ionicons name="repeat" size={15} color={colors.primary} />
+                    <Text style={styles.reorderBtnText}>{reordering === item.id ? 'Đang chuẩn bị…' : 'Đặt lại đơn'}</Text>
+                  </TouchableOpacity>
+
+                  {item.rating ? (
+                    <View style={styles.ratedBadgeSmall}>
+                      <Ionicons name="star" size={13} color="#F59E0B" />
+                      <Text style={styles.ratedBadgeSmallText}>{item.rating.driverRating}★ Đã đánh giá</Text>
+                    </View>
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.rateBtnSmall}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        nav.navigate('OrderTracking', { orderId: item.id });
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="star-outline" size={13} color="#92400E" />
+                      <Text style={styles.rateBtnSmallText}>Đánh giá</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               )}
               <View style={styles.viewDetailsRow}>
-                <Text style={styles.viewDetailsText}>Chi tiết đơn hàng</Text>
+                <Text style={styles.viewDetailsText}>Chi tiết</Text>
                 <Ionicons name="chevron-forward" size={16} color={colors.primary} />
               </View>
             </View>
@@ -230,4 +251,34 @@ const styles = StyleSheet.create({
 
   emptyWrap: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
   empty: { fontSize: 14, color: colors.muted, marginTop: spacing.md, textAlign: 'center' },
+  ratedBadgeSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: radius.pill,
+    gap: 3,
+  },
+  ratedBadgeSmallText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#92400E',
+  },
+  rateBtnSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFBEB',
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: radius.pill,
+    gap: 3,
+  },
+  rateBtnSmallText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#92400E',
+  },
 });

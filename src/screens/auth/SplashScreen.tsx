@@ -3,13 +3,14 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../theme';
 import { useAuthStore } from '../../store/authStore';
+import { useOrderStore } from '../../store/orderStore';
 
 export default function SplashScreen() {
   const navigation = useNavigation<any>();
   const hydrate = useAuthStore((state) => state.hydrate);
   useEffect(() => {
     let active = true;
-    hydrate().finally(async () => {
+    Promise.all([hydrate(), useOrderStore.getState().hydrateOrders()]).finally(async () => {
       if (!active) return;
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const { user, onboardingComplete } = useAuthStore.getState();

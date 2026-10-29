@@ -34,6 +34,22 @@ export interface CartItem {
 export type OrderStatus = 'placed' | 'preparing' | 'delivering' | 'completed';
 export type PaymentMethod = 'cash' | 'wallet';
 
+export interface OrderRating {
+  driverRating: number;
+  restaurantRating: number;
+  driverTags?: string[];
+  restaurantTags?: string[];
+  comment?: string;
+  createdAt: number;
+}
+
+export interface ChatMessage {
+  id: string;
+  sender: 'user' | 'driver';
+  text: string;
+  timestamp: number;
+}
+
 export interface Order {
   /** Stable User.id. Optional only to preserve legacy orders; missing owners are never assigned implicitly. */
   userId?: string;
@@ -41,6 +57,8 @@ export interface Order {
   subtotal: number; deliveryFee: number; discount: number; total: number;
   voucherCode?: string; paymentMethod: PaymentMethod; address: string;
   status: OrderStatus; createdAt: number;
+  rating?: OrderRating;
+  chatMessages?: ChatMessage[];
 }
 
 export interface SavedAddress { id: string; label: string; address: string; latitude?: number; longitude?: number; placeId?: string }
